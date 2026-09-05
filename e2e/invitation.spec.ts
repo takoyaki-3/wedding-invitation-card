@@ -2,11 +2,15 @@ import { test, expect } from '@playwright/test';
 import { loadEnvironment } from '../config/environment';
 
 const { wedding } = loadEnvironment();
+const endpoint = 'https://api.example.com/custom-rsvp';
 
 test('招待状の表示、任意メールなしの出席、欠席フォーム', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', err => errors.push(err.message));
   await page.goto('/');
+  const github = page.getByRole('link', { name: 'GitHubでソースコードを見る（新しいタブ）' });
+  await expect(github).toBeVisible();
+  await expect(github).toHaveAttribute('href', 'https://github.com/takoyaki-3/wedding-invitation-card');
   await expect(page.getByRole('heading', { name: 'Together, a beautiful beginning.' })).toBeVisible();
   await expect(page.getByText(wedding.groomJapanese, { exact: false }).first()).toBeVisible();
   await expect(page.getByText(wedding.venueJapanese, { exact: true })).toBeVisible();
@@ -35,9 +39,9 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
 
 test('本番モードの招待リンクと任意メールをAPIへ送信する', async ({ page }) => {
   const token = 'b'.repeat(43);
-  await page.route('**/runtime-config.json', route => route.fulfill({ json: { demo: false, apiUrl: '' } }));
+  await page.route('**/config.json', route => route.fulfill({ json: { demo: false, rsvpEndpoint: endpoint } }));
   let payload: Record<string, unknown> | undefined;
-  await page.route('**/api/rsvp', async route => {
+  await page.route(endpoint, async route => {
     payload = route.request().postDataJSON();
     await route.fulfill({ status: 201, json: { message: '回答を受け付けました。' } });
   });
@@ -53,8 +57,15 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
 });
 
 test('招待リンクなしの本番フォームは送信不可', async ({ page }) => {
-  await page.route('**/runtime-config.json', route => route.fulfill({ json: { demo: false, apiUrl: '' } }));
+  await page.route('**/config.json', route => route.fulfill({ json: { demo: false, rsvpEndpoint: endpoint } }));
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'この内容で回答する' })).toBeDisabled();
   await expect(page.getByRole('alert')).toContainText('専用の招待リンク');
+});
+
+test('本番設定にAPI URLがない場合は送信を無効にする', async ({ page }) => {
+  await page.route('**/config.json', route => route.fulfill({ json: { demo: false, rsvpEndpoint: '' } }));
+  await page.goto(`/#invite=${'b'.repeat(43)}`);
+  await expect(page.getByRole('alert')).toContainText('設定を読み込めませんでした');
+  await expect(page.getByRole('button', { name: 'この内容で回答する' })).toBeDisabled();
 });

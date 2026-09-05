@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Github, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
+import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
 
-type Runtime = { demo: boolean; apiUrl: string };
 const wedding = __WEDDING_CONFIG__;
 const date = wedding.date ? new Date(wedding.date) : null;
 const jpDate = (value: string) => value ? new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Tokyo' }).format(new Date(value)) : '日時は後日ご案内';
@@ -17,7 +17,7 @@ function Botanical({ className = '' }: { className?: string }) {
 
 function App() {
   const [menu, setMenu] = useState(false);
-  const [runtime, setRuntime] = useState<Runtime | null>(null);
+  const [runtime, setRuntime] = useState<RuntimeConfig | null>(null);
   const [configError, setConfigError] = useState(false);
   const [attendance, setAttendance] = useState<'attending' | 'declining'>('attending');
   const [sending, setSending] = useState(false);
@@ -30,11 +30,9 @@ function App() {
   useEffect(() => {
     document.title = `${wedding.groom} & ${wedding.bride} | Wedding Invitation`;
     if (window.location.hash.startsWith('#invite=')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    fetch('/runtime-config.json', { cache: 'no-store' }).then(async res => {
+    fetch('/config.json', { cache: 'no-store' }).then(async res => {
       if (!res.ok) throw new Error('config');
-      const config = await res.json();
-      if (typeof config.demo !== 'boolean' || typeof config.apiUrl !== 'string') throw new Error('config');
-      setRuntime(config);
+      setRuntime(runtimeConfigSchema.parse(await res.json()));
     }).catch(() => setConfigError(true));
   }, []);
 
@@ -61,7 +59,7 @@ function App() {
     setSending(true);
     try {
       if (!runtime.demo) {
-        const res = await fetch(`${runtime.apiUrl}/api/rsvp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed.data), signal: AbortSignal.timeout(15000) });
+        const res = await fetch(runtime.rsvpEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed.data), signal: AbortSignal.timeout(15000) });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
           throw new Error(body.message || '送信できませんでした。しばらくしてから再度お試しください。');
@@ -82,6 +80,7 @@ function App() {
         <a className="nav-rsvp" href="#rsvp" onClick={() => setMenu(false)}>出欠のご回答 <ArrowRight size={14} /></a>
       </nav>
       <button className="menu-toggle" onClick={() => setMenu(!menu)} aria-label={menu ? 'メニューを閉じる' : 'メニューを開く'} aria-expanded={menu}>{menu ? <X /> : <Menu />}</button>
+      <a className="github-link" href="https://github.com/takoyaki-3/wedding-invitation-card" target="_blank" rel="noopener noreferrer" aria-label="GitHubでソースコードを見る（新しいタブ）" title="GitHubでソースコードを見る"><Github size={21} strokeWidth={1.6} aria-hidden="true" /></a>
     </header>
 
     <main>

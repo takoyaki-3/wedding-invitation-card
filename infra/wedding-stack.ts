@@ -101,18 +101,20 @@ export class WeddingStack extends Stack {
       defaultRootObject: 'index.html',
       defaultBehavior: { origin: siteOrigin, viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS, responseHeadersPolicy: securityHeaders },
       additionalBehaviors: {
-        'runtime-config.json': { origin: siteOrigin, viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS, cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, responseHeadersPolicy: securityHeaders },
+        'config.json': { origin: siteOrigin, viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS, cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, responseHeadersPolicy: securityHeaders },
         'api/*': { origin: new origins.HttpOrigin(`${api.apiId}.execute-api.${this.region}.${this.urlSuffix}`), viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY, allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL, cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER, responseHeadersPolicy: securityHeaders }
       }
     });
+    const rsvpEndpoint = `https://${distribution.distributionDomainName}/api/rsvp`;
     new deployment.BucketDeployment(this, 'PublishWebsite', {
       destinationBucket: bucket,
-      sources: [deployment.Source.asset(path.join(root, 'dist')), deployment.Source.jsonData('runtime-config.json', { demo: false, apiUrl: '' })],
+      sources: [deployment.Source.asset(path.join(root, 'dist')), deployment.Source.jsonData('config.json', { demo: false, rsvpEndpoint })],
       distribution,
       retainOnDelete: true,
       distributionPaths: ['/*']
     });
     new CfnOutput(this, 'WebsiteUrl', { value: `https://${distribution.distributionDomainName}` });
+    new CfnOutput(this, 'RsvpEndpoint', { value: rsvpEndpoint });
     new CfnOutput(this, 'TableName', { value: table.tableName });
     new CfnOutput(this, 'EmailFailureQueueUrl', { value: deadLetters.queueUrl });
     new CfnOutput(this, 'MailerFunctionName', { value: mailer.functionName });

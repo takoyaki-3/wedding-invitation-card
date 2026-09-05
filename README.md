@@ -79,7 +79,22 @@ npx cdk bootstrap aws://YOUR_ACCOUNT_ID/ap-northeast-1
 npm run deploy
 ```
 
-公開URLはデプロイの `WebsiteUrl` 出力、または管理対象外の `cdk-outputs.json` で確認できます。スタック名は `WeddingInvitation` です。本番の `runtime-config.json` はデプロイ時に自動設定されます。
+公開URLはデプロイの `WebsiteUrl` 出力、または管理対象外の `cdk-outputs.json` で確認できます。スタック名は `WeddingInvitation` です。
+
+### APIエンドポイントの自動設定
+
+CDKは作成したCloudFrontのドメインから回答送信URLを生成し、S3の `config.json` に配置します。`public/config.json` はローカル用のデモ設定で、本番デプロイ時には次の形式に自動的に置き換わります。URLの手入力やフロントエンドへのAPI URLの埋め込みは不要です。
+
+```json
+{
+  "demo": false,
+  "rsvpEndpoint": "https://YOUR_DISTRIBUTION.cloudfront.net/api/rsvp"
+}
+```
+
+画面は起動時に `/config.json` を読み込み、`rsvpEndpoint` へ回答を送信します。CloudFrontの `/api/*` がCDKで作成されたAPI Gatewayに接続されるため、ブラウザからは同一オリジンのAPIとして利用できます。設定ファイルはCloudFrontでもキャッシュを無効にし、ブラウザは `no-store` で取得します。設定を取得・検証できない場合は送信を無効にします。
+
+生成されたURLは `RsvpEndpoint` 出力でも確認できます。`config.json` はブラウザから参照される公開設定なので、認証情報や招待トークンは記載しません。公開サイトへの変更反映には `npm run deploy` を実行してください。
 
 SES IDを指定しなければ送信元のメールアドレスIDを作成するので、届いた確認メールで認証を完了してください。既存のドメイン・IDを使う場合は環境変数に設定します。既存IDに既定の設定セットがある場合は `SES_CONFIGURATION_SET_NAME` も設定してください。CDKは指定されたIDと設定セットに限定して送信を許可します。
 
