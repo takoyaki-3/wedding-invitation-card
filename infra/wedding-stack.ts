@@ -59,7 +59,7 @@ export class WeddingStack extends Stack {
       environment: { TABLE_NAME: table.tableName, ...extra }
     });
     const register = makeFunction('RegisterRsvp', 'rsvp.ts', { RSVP_DEADLINE: wedding.deadline });
-    const mailer = makeFunction('SendCopy', 'mailer.ts', { SENDER_EMAIL: sender, HOST_EMAIL: hostEmail, SES_CONFIGURATION_SET: configurationSetName, WEDDING_CONFIG: JSON.stringify(wedding) });
+    const mailer = makeFunction('SendCopy', 'mailer.ts', { SENDER_EMAIL: sender, HOST_EMAIL: hostEmail, GROOM_EMAIL: settings.groomEmail, BRIDE_EMAIL: settings.brideEmail, SES_CONFIGURATION_SET: configurationSetName, WEDDING_CONFIG: JSON.stringify(wedding) });
     table.grantReadWriteData(register);
     table.grantReadWriteData(mailer);
     const sendResources = [identity.emailIdentityArn];

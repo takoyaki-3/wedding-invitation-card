@@ -45,3 +45,12 @@ it('タイムゾーンがない日時や不正な締切を拒否する', () => {
   expect(() => loadEnvironment(root, { WEDDING_DATE: '2099-10-22T11:00:00' })).toThrow();
   expect(() => loadEnvironment(root, { WEDDING_DEADLINE: 'not-a-date' })).toThrow();
 });
+
+it('新郎新婦の通知先は検証してサーバー専用設定に保持する', () => {
+  const root = fixture();
+  const settings = loadEnvironment(root, { RSVP_GROOM_EMAIL: 'groom@example.com', RSVP_BRIDE_EMAIL: 'bride@example.com' });
+  expect(settings.ses.groomEmail).toBe('groom@example.com');
+  expect(settings.ses.brideEmail).toBe('bride@example.com');
+  expect(JSON.stringify(settings.wedding)).not.toMatch(/groom@example|bride@example/);
+  expect(() => loadEnvironment(root, { RSVP_GROOM_EMAIL: 'invalid' })).toThrow();
+});

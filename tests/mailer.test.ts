@@ -15,6 +15,8 @@ beforeEach(() => {
   process.env.WEDDING_CONFIG = JSON.stringify(weddingFromEnv(parseEnv(readFileSync('.env.example', 'utf8'))));
   process.env.SENDER_EMAIL = 'wedding@example.com';
   process.env.HOST_EMAIL = '';
+  process.env.GROOM_EMAIL = '';
+  process.env.BRIDE_EMAIL = '';
   process.env.SES_CONFIGURATION_SET = 'test-configuration-set';
 });
 it('任意メールが未入力ならSESを呼ばない', async () => {
@@ -41,10 +43,54 @@ it('送信済みなら再送しない', async () => {
 it('SES失敗は再試行へ渡し、送信済みにしない', async () => {
   dbSend.mockResolvedValue({ Item: { ...item, email: 'guest@example.com' } });
   sesSend.mockRejectedValue(new Error('SES unavailable'));
-  await expect(run()).rejects.toThrow('SES unavailable');
+  await expect(run()).rejects.toThrow('notification deliveries failed');
   expect(dbSend).toHaveBeenCalledTimes(1);
 });
 it('回答以外のストリームイベントは無視する', async () => {
   await handler({ Records: [{ eventName: 'INSERT', dynamodb: { Keys: { pk: { S: 'INVITE#test' } } } }] } as DynamoDBStreamEvent, {} as Context, () => {});
   expect(dbSend).not.toHaveBeenCalled();
+});
+
+it('回答者のメール未入力でも新郎・新婦へ個別に通知する', async () => {
+  process.env.GROOM_EMAIL = 'groom@example.com';
+  process.env.BRIDE_EMAIL = 'bride@example.com';
+  dbSend.mockResolvedValue({ Item: item });
+  await run();
+  expect(sesSend.mock.calls.map(([command]) => command.input.Destination.ToAddresses)).toEqual([['groom@example.com'], ['bride@example.com']]);
+  for (const [command] of sesSend.mock.calls) {
+    expect(command.input.Content.Simple.Body.Text.Data).toContain('新しい出欠回答を受け付けました');
+    expect(command.input.Content.Simple.Body.Text.Data).toContain('お名前：山田 花子');
+    expect(command.input.Content.Simple.Body.Text.Data).toContain('メールアドレス：未登録');
+  }
+  expect(dbSend.mock.calls.slice(1).map(([command]) => command.input.ExpressionAttributeNames['#flag'])).toEqual(['groomMailSent', 'brideMailSent']);
+});
+
+it('回答者へのコピーが失敗しても新郎・新婦に通知する', async () => {
+  process.env.GROOM_EMAIL = 'groom@example.com';
+  process.env.BRIDE_EMAIL = 'bride@example.com';
+  dbSend.mockResolvedValue({ Item: { ...item, email: 'guest@example.com' } });
+  sesSend.mockRejectedValueOnce(new Error('Guest mailbox failure'));
+  await expect(run()).rejects.toThrow('notification deliveries failed');
+  expect(sesSend.mock.calls.map(([command]) => command.input.Destination.ToAddresses)).toEqual([['guest@example.com'], ['groom@example.com'], ['bride@example.com']]);
+});
+
+it('片方が失敗した後の再試行では、未送信の宛先だけに通知する', async () => {
+  process.env.GROOM_EMAIL = 'groom@example.com';
+  process.env.BRIDE_EMAIL = 'bride@example.com';
+  const state: Record<string, unknown> = { ...item, attendance: 'declining' };
+  dbSend.mockImplementation(async command => {
+    if (command.input.UpdateExpression) {
+      state[command.input.ExpressionAttributeNames['#flag']] = true;
+      return {};
+    }
+    return { Item: { ...state } };
+  });
+  sesSend.mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Bride mailbox failure'));
+  await expect(run()).rejects.toThrow('notification deliveries failed');
+  expect(state.groomMailSent).toBe(true);
+  expect(state.brideMailSent).toBeUndefined();
+  await run();
+  expect(sesSend.mock.calls.map(([command]) => command.input.Destination.ToAddresses)).toEqual([['groom@example.com'], ['bride@example.com'], ['bride@example.com']]);
+  expect(sesSend.mock.calls[2][0].input.Content.Simple.Body.Text.Data).toContain('ご出欠：ご欠席');
+  expect(state.brideMailSent).toBe(true);
 });

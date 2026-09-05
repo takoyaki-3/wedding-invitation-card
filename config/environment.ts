@@ -3,8 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { parseEnv } from 'node:util';
 import { weddingFromEnv } from '../shared/wedding';
+import { z } from 'zod';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
+const notificationEmail = z.string().trim().email().or(z.literal(''));
 
 export function loadEnvironment(root = projectRoot, overrides: NodeJS.ProcessEnv = process.env) {
   const read = (name: string) => {
@@ -21,7 +23,9 @@ export function loadEnvironment(root = projectRoot, overrides: NodeJS.ProcessEnv
         identityDomain: env.SES_IDENTITY_DOMAIN || '',
         identityArn: env.SES_IDENTITY_ARN || '',
         configurationSetName: env.SES_CONFIGURATION_SET_NAME || '',
-        hostEmail: env.RSVP_HOST_EMAIL || ''
+        hostEmail: notificationEmail.parse(env.RSVP_HOST_EMAIL || ''),
+        groomEmail: notificationEmail.parse(env.RSVP_GROOM_EMAIL || ''),
+        brideEmail: notificationEmail.parse(env.RSVP_BRIDE_EMAIL || '')
       }
     };
   } catch (error) {
