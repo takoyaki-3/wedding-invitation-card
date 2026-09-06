@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297" fill="none">
+  <title>Railway and flowing water invitation border</title>
+  <defs>
+    <pattern id="sleepers" width="7" height="4.5" patternUnits="userSpaceOnUse">
+      <path d="M0 1h7" stroke="#435c49" stroke-width=".26"/>
+    </pattern>
+    <pattern id="top-sleepers" width="4.5" height="7" patternUnits="userSpaceOnUse">
+      <path d="M1 0v7" stroke="#435c49" stroke-width=".26"/>
+    </pattern>
+  </defs>
+  <path d="M17 5H205V292H5V17" stroke="#435c49" stroke-opacity=".2" stroke-width=".2"/>
+  <g stroke="#435c49" stroke-width=".3" opacity=".55">
+    <path d="M8 272V28C8 17.5 16.5 9 27 9H75M11 272V28C11 19.2 18.2 12 27 12H75"/>
+    <path d="M6.1 33h6.8M6.1 37.5h6.8M6.1 42h6.8M6.1 28h6.8M6.7 22.3l6.5 1.7M9.2 16.3l5.5 3.8M13.5 11.8l3.9 5.6M19.4 8.9l1.8 6.5M26 7v7"/>
+    <path d="M6.1 265h6.8M6.1 269.5h6.8"/>
+  </g>
+  <rect x="6.1" y="45" width="6.8" height="216" fill="url(#sleepers)" opacity=".55"/>
+  <rect x="30" y="7" width="45" height="7" fill="url(#top-sleepers)" opacity=".55"/>
+  <g stroke="#435c49" stroke-width=".4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.9" y="73.5" width="7.2" height="12" rx="2.6" fill="#f8f7f2"/>
+    <path d="M7.2 76h4.6v4.2H7.2zM8.5 74.8h2M7.1 85.3l-.9 1.8m5.7-1.8.9 1.8"/>
+    <circle cx="7.8" cy="82.8" r=".55"/><circle cx="11.2" cy="82.8" r=".55"/>
+  </g>
+  <g stroke="#719b9f" stroke-width=".35" opacity=".65">
+    <path d="M195 14C188 38 208 43 199 69S191 100 199 126S206 159 198 185S189 216 198 244S207 276 194 287C178 299 153 275 126 287S81 278 52 287"/>
+    <path d="M198 14C191 38 211 43 202 69S194 100 202 126S209 159 201 185S192 216 201 244S210 279 196 290C178 304 154 278 127 290S82 281 53 290"/>
+    <path d="M192 14C185 38 205 43 196 69S188 100 196 126S203 159 195 185S186 216 195 244S204 273 192 284C178 294 152 272 125 284S80 275 51 284"/>
+    <ellipse cx="198" cy="53" rx="6" ry="1.8" fill="#f8f7f2"/>
+    <ellipse cx="198" cy="53" rx="3.2" ry=".75"/>
+  </g>
+  <path d="M198 43.8c-1.2 1.8-2.6 3.4-2.6 4.8a2.6 2.6 0 0 0 5.2 0c0-1.4-1.4-3-2.6-4.8Z" fill="#f8f7f2" stroke="#719b9f" stroke-width=".4"/>
+  <g stroke="#719b9f" stroke-width=".3" opacity=".45">
+    <ellipse cx="30" cy="284" rx="10" ry="2.3"/>
+    <ellipse cx="30" cy="284" rx="6.5" ry="1.4"/>
+    <ellipse cx="30" cy="284" rx="2.5" ry=".55"/>
+  </g>
+</svg>

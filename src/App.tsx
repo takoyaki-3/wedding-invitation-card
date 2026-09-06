@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Leaf, Mail, MapPin, Menu, Phone, Plus, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Mail, MapPin, Menu, Phone, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
 import { CoupleSlideshow } from './CoupleSlideshow';
+import { RailwayArch, RailWaterMotif, WaterRipples } from './RailWaterMotif';
 import { gatheringFromSearch } from '../shared/invitation';
 import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
 
@@ -13,10 +14,6 @@ const part = (type: string) => dateParts.find(p => p.type === type)?.value || '�
 const weekday = date ? new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'Asia/Tokyo' }).format(date) : 'COMING SOON';
 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.mapQuery)}`;
 const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(wedding.mapQuery)}&output=embed`;
-
-function Botanical({ className = '' }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 150 220" fill="none" aria-hidden="true"><g stroke="currentColor" strokeWidth="1.1"><path d="M73 216C68 157 83 93 98 15M76 178C46 151 34 111 35 75M79 150C104 126 122 100 132 68M83 110C68 89 61 65 63 41"/>{[[73,192,-38],[74,165,32],[79,135,-35],[87,90,30],[93,56,-25],[42,111,-43],[52,140,33],[111,109,35],[122,88,-20],[65,67,-26]].map(([x,y,r], i) => <ellipse key={i} cx={x} cy={y} rx="7" ry="19" transform={`rotate(${r} ${x} ${y})`} />)}<path d="M98 31C86 15 93 4 103 2C109 13 109 21 98 31Z"/></g></svg>;
-}
 
 function App() {
   const [menu, setMenu] = useState(false);
@@ -94,6 +91,7 @@ function App() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <div className="eyebrow"><span /> WE ARE GETTING MARRIED</div>
+          {/* <RailWaterMotif className="hero-motif" /> */}
           <h1 id="hero-title">Together,<br /><em>a beautiful</em><br />beginning.</h1>
           <p className="hero-japanese">大切なあなたと、はじまりの一日を。</p>
           <div className="couple-names">{wedding.groom} <span>&</span> {wedding.bride}</div>
@@ -103,18 +101,16 @@ function App() {
           <a className="outline-button invitation-download" href={`/invitation/${new URLSearchParams(window.location.search).get('group') === 'family' ? 'family' : 'friend'}.pdf`} download="結婚式の招待状.pdf">紙の招待状をダウンロード（PDF）<ArrowDown size={15} aria-hidden="true" /></a>
         </div>
         <div className="hero-art">
+          <RailwayArch />
           <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER, WITH YOU.</div></div>
           <img className="wedding-seal wedding-seal-logo" src="/logo-monochrome.svg" alt="Y & S" />
-          {/* 元のシールに戻す場合は、上の画像を削除して以下のコメントを解除してください。
-          <div className="wedding-seal"><Flower2 size={24} strokeWidth={1} /><span>WITH LOVE</span><strong>{wedding.groom[0]} & {wedding.bride[0]}</strong><span>{date ? `${part('month')}.${part('day')}.${part('year')}` : 'OUR WEDDING'}</span></div>
-          */}
-          <Botanical className="hero-botanical" />
+          <WaterRipples className="hero-ripples" />
           <span className="side-note">OUR NEXT CHAPTER STARTS HERE</span>
         </div>
         <a className="scroll-note" href="#message">SCROLL TO DISCOVER <ArrowDown size={13} /></a>
       </section>
 
-      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><Flower2 size={18} strokeWidth={1} /><span>{date ? `${weekday.toUpperCase()}, ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
+      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><RailWaterMotif className="ribbon-motif" /><span>{date ? `${weekday.toUpperCase()}, ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
 
       <section id="message" className="message-section section-anchor">
         <div className="section-kicker">01 — MESSAGE</div>
@@ -127,7 +123,7 @@ function App() {
           <p>2026年10月吉日</p>
         </div>
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
-        <Botanical className="message-botanical" />
+        <RailWaterMotif className="message-motif" />
       </section>
 
       <CoupleSlideshow />
@@ -150,7 +146,7 @@ function App() {
       </section>
 
       <section id="rsvp" className="rsvp-section section-anchor">
-        <div className="rsvp-intro"><div className="section-kicker">04 — RSVP</div><h2>Will you join us?</h2><p className="section-subtitle">出欠のご回答</p><p className="rsvp-description">お会いできる日を 心より楽しみにしています。<br />下記のフォームよりご回答をお願いいたします。</p><div className="reply-by"><CalendarDays size={18} strokeWidth={1.3} /><div><span>PLEASE REPLY BY</span><p>{jpDate(wedding.deadline)}</p></div></div><Leaf className="rsvp-leaf" size={62} strokeWidth={0.7} /></div>
+        <div className="rsvp-intro"><div className="section-kicker">04 — RSVP</div><h2>Will you join us?</h2><p className="section-subtitle">出欠のご回答</p><p className="rsvp-description">お会いできる日を 心より楽しみにしています。<br />下記のフォームよりご回答をお願いいたします。</p><div className="reply-by"><CalendarDays size={18} strokeWidth={1.3} /><div><span>PLEASE REPLY BY</span><p>{jpDate(wedding.deadline)}</p></div></div><WaterRipples className="rsvp-ripples" /></div>
         <div className="rsvp-panel">
           {submitted ? <div className="success-state" ref={resultRef} tabIndex={-1}><div className="success-icon"><Check size={30} strokeWidth={1.2} /></div><span className="section-kicker">THANK YOU</span><h3>{runtime?.demo ? 'ご回答のプレビューが完了しました' : 'ご回答ありがとうございます'}</h3><p>{runtime?.demo ? 'これはデモのため、出欠の登録・メール送信は行われていません。' : '出欠のご回答を受け付けました。メールアドレスをご登録の方には、回答のコピーを順次お送りします。'}<br />{attendance === 'attending' ? '当日お会いできることを楽しみにしています。' : 'あたたかなお気持ちをありがとうございます。'}</p>{runtime?.demo && <button className="text-button" onClick={() => setSubmitted(false)}>フォームに戻る <ArrowRight size={15} /></button>}</div> : <form onSubmit={submit}>
             {runtime?.demo && <p className="demo-notice">プレビュー版：回答は保存されず、メールも送信されません。</p>}
@@ -175,7 +171,7 @@ function App() {
         </div>
       </section>
 
-      <section className="closing"><Flower2 size={28} strokeWidth={0.8} /><p>We can't wait to celebrate with you.</p><span>あなたと過ごす 特別な一日を楽しみに。</span></section>
+      <section className="closing"><RailWaterMotif /><p>We can't wait to celebrate with you.</p><span>あなたと過ごす 特別な一日を楽しみに。</span></section>
     </main>
     <footer><a href="#" className="footer-names">{wedding.groom} <em>&</em> {wedding.bride}</a><span>WITH LOVE, ALWAYS.</span><a href={`mailto:${wedding.contactEmail}`}>お問い合わせ <ChevronRight size={12} /></a></footer>
   </>;

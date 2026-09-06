@@ -8,6 +8,7 @@ const { wedding: w } = loadEnvironment();
 const escape = (text: string) => text.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const dateLabel = (value: string) => value ? new Intl.DateTimeFormat('ja-JP', { dateStyle: 'full', timeZone: 'Asia/Tokyo' }).format(new Date(value)) : '日時は後日ご案内';
 const logo = readFileSync(new URL('../public/logo-monochrome.svg', import.meta.url)).toString('base64');
+const border = readFileSync(new URL('../public/rail-water-border.svg', import.meta.url)).toString('base64');
 const output = new URL('../public/invitation/', import.meta.url);
 mkdirSync(output, { recursive: true });
 const browser = await chromium.launch({ channel: process.platform === 'win32' ? 'msedge' : undefined });
@@ -16,18 +17,19 @@ try {
     const gathering = gatheringFromSearch(`?group=${group}`);
     const page = await browser.newPage();
     await page.setContent(`<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>Wedding Invitation</title><style>
-      @page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;color:#435c49;background:#fff;font-family:'Yu Mincho','Noto Serif CJK JP','MS Mincho',serif}
-      main{width:210mm;height:297mm;padding:11mm 20mm;position:relative;text-align:center}
-      main:before{content:'';position:absolute;inset:9mm;border:1px solid #c6cebf;pointer-events:none}
-      .logo{width:16mm;height:16mm} .eyebrow{font:9pt Georgia,serif;letter-spacing:3pt;margin:2mm 0}
-      h1{font:italic 28pt Georgia,serif;margin:2mm 0 3mm}.names{font:21pt Georgia,serif;margin:0 0 2mm}.jp-names{font-size:12pt;letter-spacing:2pt;margin:0}
-      .message{font-size:10pt;line-height:1.7;margin:3mm 0}.message p{margin:0 0 1mm}
+      @page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;color:#435c49;background:#f8f7f2;font-family:'Yu Mincho','Noto Serif CJK JP','MS Mincho',serif}
+      main{width:210mm;height:297mm;padding:12mm 20mm 20mm;position:relative;text-align:center;isolation:isolate}
+      .border-art{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+      .logo{display:block;width:15mm;height:15mm;margin:0 auto} .eyebrow{font:8pt Georgia,serif;letter-spacing:2.6pt;margin:1.5mm 0;color:#719b9f}
+      h1{font:italic 28pt Georgia,serif;margin:1.5mm 0 2mm}.names{font:19pt Georgia,serif;margin:0 0 2mm}.jp-names{font-size:12pt;letter-spacing:2pt;margin:0}
+      .message{font-size:10pt;line-height:1.7;margin:2.5mm 0}.message p{margin:0 0 .8mm}
       .ceremony-invitation{font-size:9pt;line-height:1.7;margin:2mm 0}.ceremony-invitation p{margin:1mm 0}
       .details{border-top:1px solid #c6cebf;border-bottom:1px solid #c6cebf;padding:3mm 0;margin-top:3mm}
-      h2{font-size:14pt;font-weight:normal;margin:0 0 2mm}.schedule{display:flex;justify-content:center;gap:12mm;font-size:10pt;line-height:1.7}.schedule strong{font-size:14pt;font-weight:normal}
-      .venue{font-size:12pt;margin:2mm 0 1mm}.address,.access{font-size:9pt;line-height:1.8;margin:1mm 0;white-space:pre-line}
-      .reply{font-size:10pt;line-height:1.9;margin:3mm 0 0}.contact{font-size:8pt;margin-top:2mm}a{color:inherit;text-decoration:none}.closing{font:italic 14pt Georgia,serif;margin:3mm 0 0}
+      h2{font-size:14pt;font-weight:normal;margin:0 0 2mm}.schedule{display:grid;grid-template-columns:repeat(4,1fr);font-size:10pt;line-height:1.6}.schedule>div{position:relative;padding-top:4mm}.schedule>div:before{content:'';position:absolute;left:0;right:0;top:1mm;border-top:1px solid #719b9f}.schedule>div:first-child:before{left:50%}.schedule>div:last-child:before{right:50%}.schedule>div:after{content:'';position:absolute;left:calc(50% - .9mm);top:.15mm;width:1.8mm;height:1.8mm;border:1px solid #435c49;border-radius:50%;background:#f8f7f2}.schedule strong{font-size:14pt;font-weight:normal}
+      .venue{font-size:12pt;margin:2mm 0 1mm}.address,.access{font-size:9pt;line-height:1.6;margin:1mm 0;white-space:pre-line}
+      .reply{font-size:10pt;line-height:1.7;margin:3mm 0 0}.contact{font-size:9pt;margin:2mm 0 0}a{color:inherit;text-decoration:none}.closing{font:italic 12pt Georgia,serif;margin:2mm 0 0;color:#719b9f}
     </style></head><body><main>
+      <img class="border-art" src="data:image/svg+xml;base64,${border}" alt="">
       <img class="logo" src="data:image/svg+xml;base64,${logo}" alt="Y & S">
       <p class="eyebrow">WE ARE GETTING MARRIED</p><h1>Wedding Invitation</h1>
       <p class="names">${escape(w.groom)} &amp; ${escape(w.bride)}</p>
@@ -49,7 +51,21 @@ try {
       <p class="closing">We can't wait to celebrate with you.</p>
     </main></body></html>`);
     await page.evaluate(() => document.fonts.ready);
-    const fits = await page.locator('main').evaluate(el => el.scrollHeight <= el.clientHeight && el.scrollWidth <= el.clientWidth);
+    const fits = await page.locator('main').evaluate(el => {
+      const pageBounds = el.getBoundingClientRect();
+      const styles = getComputedStyle(el);
+      const contentBounds = {
+        top: pageBounds.top + parseFloat(styles.paddingTop),
+        bottom: pageBounds.bottom - parseFloat(styles.paddingBottom),
+        left: pageBounds.left + parseFloat(styles.paddingLeft),
+        right: pageBounds.right - parseFloat(styles.paddingRight),
+      };
+      return [...el.querySelectorAll<HTMLElement>('*:not(.border-art)')].every(child => {
+        const bounds = child.getBoundingClientRect();
+        return bounds.top >= contentBounds.top - 1 && bounds.bottom <= contentBounds.bottom + 1
+          && bounds.left >= contentBounds.left - 1 && bounds.right <= contentBounds.right + 1;
+      });
+    });
     if (!fits) throw new Error(`Invitation content exceeds A4 page (${group}).`);
     await page.pdf({ path: fileURLToPath(new URL(`${group}.pdf`, output)), format: 'A4', printBackground: true, preferCSSPageSize: true });
     await page.close();

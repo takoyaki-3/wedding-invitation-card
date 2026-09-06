@@ -1,0 +1,107 @@
+/* A shared journey: sage railway lines and blue-green water on warm paper. */
+:root {
+  --rail: #84957d;
+  --water: #719b9f;
+  --water-ink: #4f797c;
+  --water-pale: #e8f0ed;
+}
+
+.rail-water-motif { display: flex; align-items: center; justify-content: center; gap: 13px; width: 252px; max-width: 100%; }
+.rail-water-motif > svg { display: block; flex: 1; min-width: 0; height: 36px; }
+.rail-water-motif > .rail-symbol, .rail-water-motif > .water-symbol { flex: 0 0 23px; width: 23px; height: 27px; }
+.rail-symbol { color: var(--rail); }
+.water-symbol { color: var(--water); }
+.hero-motif { margin: 0 0 26px; width: 226px; }
+.hero .eyebrow { margin-bottom: 16px; }
+.hero { background: radial-gradient(ellipse at 87% 70%, #e6efeb 0, transparent 52%); }
+.hero h1 em { color: var(--water-ink); }
+.hero-art { padding: 0 16px; margin-bottom: 15px; }
+.railway-arch { position: absolute; inset: -25px -7px -18px; width: calc(100% + 14px); height: calc(100% + 43px); pointer-events: none; }
+.photo-arch { border: 1px solid #d3ded5; }
+.wedding-seal-logo { z-index: 2; background: #f4f5ed; box-shadow: 0 3px 14px #35483a0b; }
+.water-ripples { display: block; color: var(--water); pointer-events: none; }
+.hero-ripples { position: absolute; width: 205px; right: -10px; bottom: -66px; }
+.hero-art .side-note { right: -26px; color: var(--water-ink); }
+.date-ribbon { position: relative; background: linear-gradient(100deg, #e9ecdf, #e7efec); border-color: #cddbd3; }
+.date-ribbon .ribbon-motif { width: 130px; flex-shrink: 0; gap: 9px; }
+.date-ribbon .rail-symbol, .date-ribbon .water-symbol { flex-basis: 17px; width: 17px; height: 21px; }
+.message-section { background: url('/water-lines.svg') center bottom 30px / 100% auto no-repeat; }
+.message-motif { margin: 36px auto 0; padding: 0 12px; background: #f8f7f2; position: relative; }
+.message-section .japanese-names span { color: var(--water-ink); }
+.couple-photo-frame { background: linear-gradient(135deg, #e9ecdf, #e4eeec); }
+
+/* The day's four stops sit on a railway line. */
+.details-section { background: #eef1e9 url('/water-lines.svg') right bottom / 900px auto no-repeat; }
+.schedule-grid {
+  padding-top: 35px;
+  background-image: linear-gradient(var(--rail), var(--rail)), linear-gradient(var(--rail), var(--rail)), repeating-linear-gradient(90deg, transparent 0 12px, #a1b09a 12px 13px, transparent 13px 24px);
+  background-size: 100% 1px, 100% 1px, 100% 12px;
+  background-position: 0 9px, 0 15px, 0 6px;
+  background-repeat: no-repeat;
+}
+.schedule-card { background: #fbfbf6; border-color: #cdd8cb; border-top: 2px solid var(--rail); }
+.schedule-card::before { content: ''; position: absolute; width: 12px; height: 12px; border: 1.5px solid var(--rail); border-radius: 50%; background: #f8f7f2; top: -31px; left: calc(50% - 7px); z-index: 1; }
+.schedule-card::after { content: ''; position: absolute; height: 17px; width: 1px; background: var(--rail); top: -17px; left: 50%; }
+.schedule-card:nth-child(even) { border-color: #c9dcd7; border-top-color: var(--water); background: #f7faf7; }
+.schedule-card:nth-child(even)::before { border-color: var(--water); }
+.schedule-card:nth-child(even) .schedule-icon svg, .schedule-card:nth-child(even) .schedule-number { color: var(--water-ink); }
+.schedule-card .schedule-ja, .schedule-card p { color: #606f61; }
+.schedule-card .schedule-number { font-style: normal; font-size: 13px; letter-spacing: 1px; }
+.venue-photo { padding: 8px; border: 1px solid #c9d9d0; background: #e8f0ed; }
+.rsvp-section { background: linear-gradient(120deg, #e9ede2, #e6f0ed); }
+.rsvp-intro { position: relative; }
+.rsvp-ripples { width: 220px; margin: 44px 0 0; }
+.rsvp-panel { border-color: #cbdad2; }
+.reply-by { border-left: 3px double var(--water); padding-left: 16px; }
+.closing { background: url('/water-lines.svg') center bottom / 960px auto no-repeat; }
+.closing > .rail-water-motif { margin: 0 auto 22px; }
+.closing > p { color: var(--water-ink); }
+
+@media (max-width: 1000px) {
+  .schedule-grid {
+    grid-template-columns: 1fr;
+    padding: 0 0 0 30px;
+    gap: 16px;
+    background-image: linear-gradient(var(--rail), var(--rail)), linear-gradient(var(--rail), var(--rail)), repeating-linear-gradient(180deg, transparent 0 12px, #a1b09a 12px 13px, transparent 13px 24px);
+    background-size: 1px 100%, 1px 100%, 12px 100%;
+    background-position: 9px 0, 15px 0, 6px 0;
+  }
+  .schedule-card { text-align: left; padding: 24px 20px 22px 65px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; }
+  .schedule-card::before { top: 33px; left: -26px; }
+  .schedule-card::after { width: 17px; height: 1px; left: -17px; top: 40px; }
+  .schedule-icon { position: absolute; left: 24px; top: 36px; margin: 0; }
+  .schedule-number { left: 13px; top: 10px; }
+  .schedule-card h3 { font-size: 26px; }
+  .schedule-ja { grid-column: 1; }
+  .schedule-time { grid-column: 2; grid-row: 1 / 3; margin: 0; }
+  .schedule-card p { grid-column: 1 / 3; margin: 10px 0 0; font-size: 10px; }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .hero h1 { font-size: clamp(49px, 7.6vw, 68px); }
+  .hero-motif { width: 195px; }
+  .hero-ripples { width: 170px; right: 0; bottom: -52px; }
+}
+
+@media (max-width: 640px) {
+  .hero { gap: 56px; padding-bottom: 94px; background: radial-gradient(ellipse at 70% 77%, #e6efeb 0, transparent 52%); }
+  .hero-motif { margin: 0 auto 24px; width: 205px; }
+  .hero-art { padding: 0 16px; margin-bottom: 0; }
+  .railway-arch { left: -2px; width: calc(100% + 4px); }
+  .hero-art .side-note { right: -4px; font-size: 6px; }
+  .hero-ripples { width: 165px; right: 0; bottom: -60px; }
+  .wedding-seal-logo { left: -3px; }
+  .date-ribbon { display: grid; grid-template-columns: 1fr; gap: 5px; text-align: center; padding: 18px 15px; }
+  .date-ribbon .ribbon-motif { margin: auto; width: 112px; height: 26px; }
+  .date-ribbon .ribbon-motif > svg { max-height: 26px; }
+  .message-section { background-size: auto 100px; background-position: center bottom 20px; }
+  .message-motif { width: 205px; margin-top: 28px; }
+  .schedule-card { padding-left: 53px; padding-right: 15px; }
+  .schedule-icon { left: 18px; }
+  .schedule-icon svg { width: 22px; }
+  .schedule-card h3 { font-size: 24px; }
+  .schedule-time { grid-column: 1 / -1; grid-row: 3; font-size: 28px; margin-top: 12px; }
+  .schedule-card .schedule-time.time-pending { font-size: 22px; line-height: 1.3; }
+  .rsvp-ripples { width: 150px; margin: 24px auto 0; }
+  .closing { background-size: auto 100px; }
+}
