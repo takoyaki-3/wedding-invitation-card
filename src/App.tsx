@@ -99,7 +99,10 @@ function App() {
         </div>
         <div className="hero-art">
           <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER, WITH YOU.</div></div>
+          <img className="wedding-seal wedding-seal-logo" src="/YS_rail_water_logo_monochrome.svg" alt="Y & S" />
+          {/* 元のシールに戻す場合は、上の画像を削除して以下のコメントを解除してください。
           <div className="wedding-seal"><Flower2 size={24} strokeWidth={1} /><span>WITH LOVE</span><strong>{wedding.groom[0]} & {wedding.bride[0]}</strong><span>{date ? `${part('month')}.${part('day')}.${part('year')}` : 'OUR WEDDING'}</span></div>
+          */}
           <Botanical className="hero-botanical" />
           <span className="side-note">OUR NEXT CHAPTER STARTS HERE</span>
         </div>
