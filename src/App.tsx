@@ -61,7 +61,7 @@ function App() {
     fields.name = `${String(fields.lastName || '').trim()} ${String(fields.firstName || '').trim()}`.trim();
     fields.kana = `${String(fields.lastKana || '').trim()} ${String(fields.firstKana || '').trim()}`.trim();
     for (const key of ['lastName', 'firstName', 'lastKana', 'firstKana']) delete fields[key];
-    const parsed = responseSchema.safeParse({ ...fields, attendance, allergies: attendance === 'attending' ? fields.allergies || '' : '', consent: fields.consent === 'on', token: runtime.demo ? 'd'.repeat(43) : token });
+    const parsed = responseSchema.safeParse({ ...fields, attendance, allergies: attendance === 'attending' ? fields.allergies || '' : '', token: runtime.demo ? 'd'.repeat(43) : token });
     if (!parsed.success) { setError(parsed.error.issues[0]?.message || '入力内容をご確認ください'); return; }
     setSending(true);
     try {
@@ -124,6 +124,7 @@ function App() {
           <p>このたび　私たちは<br />結婚式を挙げることになりました</p>
           <p>つきましては日頃のご厚誼を感謝するとともに<br />末永いおつきあいをお願いいたしたく<br />ささやかながら披露の小宴を催したいと存じます</p>
           <p>ご多用中とは存じますが<br />ご出席くださいますようご案内申し上げます</p>
+          <p>2026年10月吉日</p>
         </div>
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
         <Botanical className="message-botanical" />
@@ -135,11 +136,11 @@ function App() {
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
         <div className="event-date"><CalendarDays size={19} strokeWidth={1.4} /><span>{jpDate(wedding.date)}{date && <small>（{new Intl.DateTimeFormat('ja-JP', { weekday: 'short', timeZone: 'Asia/Tokyo' }).format(date)}）</small>}</span></div>
         <div className="ceremony-invitation">
-          <p>誠に恐縮でございますが 結婚式にもご参列賜りたく<br />当日は {gathering.time} までに<br />{wedding.venueJapanese} {gathering.place} に<br />お越しくださいますようお願い申し上げます</p>
+          <p>誠に恐縮でございますが 挙式にもご参列賜りたく<br />当日は {gathering.time} までに<br />{wedding.venueJapanese} {gathering.place} に<br />お越しくださいますようお願い申し上げます</p>
           <p>尚 クロークは3階 着替室は4階にございます</p>
         </div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '挙式後', text: '披露宴前に3階にて受付を行います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 
@@ -165,9 +166,8 @@ function App() {
             <label className="form-field">建物名・部屋番号 <span className="optional">任意</span><input name="building" autoComplete="address-line2" placeholder="〇〇マンション 101号室" maxLength={200} disabled={sending} /></label>
             <label className="form-field">メールアドレス <span className="optional">任意</span><input name="email" type="email" autoComplete="email" placeholder="hanako@example.com" maxLength={254} disabled={sending} /><small>ご入力いただいた方に、回答のコピーをメールでお送りします。</small></label>
             {attendance === 'attending' && <label className="form-field">アレルギー・お食事について <span className="optional">任意</span><input name="allergies" placeholder="お持ちのアレルギーなどがあればお知らせください" maxLength={500} disabled={sending} /></label>}
-            <label className="form-field">おふたりへのメッセージ <span className="optional">任意</span><textarea name="message" rows={3} placeholder="お祝いのメッセージなど ご自由にお書きください" maxLength={1000} disabled={sending} /></label>
+            <label className="form-field">ふたりへのメッセージ <span className="optional">任意</span><textarea name="message" rows={3} placeholder="お祝いのメッセージなど ご自由にお書きください" maxLength={1000} disabled={sending} /></label>
             <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
-            <label className="consent"><input name="consent" type="checkbox" required disabled={sending} /><span>ご入力いただいた情報を、結婚式の出欠確認・ご連絡・お食事の手配に利用することに同意します。</span></label>
             {error && <p className="form-error" role="alert">{error}</p>}
             <button className="primary-button submit-button" type="submit" disabled={sending || !runtime || deadlinePassed || (!runtime.demo && !token)}>{sending ? '送信しています…' : runtime?.demo ? '回答をプレビューする' : 'この内容で回答する'}<ArrowRight size={16} /></button>
             <p className="form-footnote"><Mail size={12} /> メールアドレスをご登録の方に回答のコピーをお送りします</p>

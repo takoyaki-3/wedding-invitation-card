@@ -12,7 +12,6 @@ export const responseSchema = z.object({
   email: z.union([z.string().trim().email('メールアドレスをご確認ください').max(254), z.literal('')]).default('').transform(s => s.toLowerCase()),
   allergies: z.string().trim().max(500).default(''),
   message: z.string().trim().max(1000).default(''),
-  consent: z.literal(true),
   website: z.string().max(0).default('')
 }).strict();
 

@@ -55,7 +55,7 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
   await page.getByLabel('名', { exact: true }).fill('花子');
   await page.getByLabel('せい', { exact: true }).fill('やまだ');
   await page.getByLabel('めい', { exact: true }).fill('はなこ');
-  await page.getByRole('checkbox').check();
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByRole('button', { name: '回答をプレビューする' }).click();
   await expect(page.getByRole('heading', { name: 'ご回答のプレビューが完了しました' })).toBeVisible();
   await page.getByRole('button', { name: 'フォームに戻る' }).click();
@@ -66,7 +66,7 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
   await page.getByLabel('せい', { exact: true }).fill('やまだ');
   await page.getByLabel('めい', { exact: true }).fill('はなこ');
   await page.getByLabel('メールアドレス', { exact: false }).fill('guest@example.com');
-  await page.getByRole('checkbox').check();
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByRole('button', { name: '回答をプレビューする' }).click();
   await expect(page.getByText('あたたかなお気持ちをありがとうございます。', { exact: false })).toBeVisible();
   expect(errors).toEqual([]);
@@ -92,7 +92,7 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   await page.getByLabel('名', { exact: true }).fill('花子');
   await page.getByLabel('せい', { exact: true }).fill('やまだ');
   await page.getByLabel('めい', { exact: true }).fill('はなこ');
-  await page.getByRole('checkbox').check();
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByRole('button', { name: 'この内容で回答する' }).click();
   await expect(page.getByRole('heading', { name: 'ご回答ありがとうございます' })).toBeVisible();
   expect(payload?.token).toBe(token);
@@ -108,7 +108,9 @@ test('クエリの区分に応じて集合案内を表示する', async ({ page 
     await expect(gathering).toContainText(query === '?group=family' ? '11:25' : '12:00');
     await expect(gathering).toContainText(query === '?group=family' ? '4階親族控室' : '4階ロビー');
     await expect(page.locator('.schedule-card').nth(1)).toContainText(wedding.ceremonyTime);
-    await expect(page.locator('.schedule-card').nth(2)).toContainText(wedding.partyTime);
+    await expect(page.locator('.schedule-card').nth(2)).toContainText('受付');
+    await expect(page.locator('.schedule-card').nth(2)).toContainText('3階');
+    await expect(page.locator('.schedule-card').nth(3)).toContainText(wedding.partyTime);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
 });

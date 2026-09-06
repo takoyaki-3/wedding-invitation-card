@@ -25,7 +25,7 @@ export const handler: APIGatewayProxyHandlerV2 = async event => {
   let raw: unknown;
   try { raw = JSON.parse(body); } catch { return reply(400, '入力内容をご確認ください。'); }
   const parsed = responseSchema.safeParse(raw);
-  if (!parsed.success) return reply(400, '入力内容、同意事項、招待リンクをご確認ください。');
+  if (!parsed.success) return reply(400, '入力内容、招待リンクをご確認ください。');
   const { token, website: _website, ...response } = parsed.data;
   if (response.attendance === 'declining') response.allergies = '';
   const digest = hash(token);

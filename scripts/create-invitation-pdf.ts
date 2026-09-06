@@ -30,15 +30,18 @@ try {
     </style></head><body><main>
       <img class="logo" src="data:image/svg+xml;base64,${logo}" alt="Y & S">
       <p class="eyebrow">WE ARE GETTING MARRIED</p><h1>Wedding Invitation</h1>
-      <p class="names">${escape(w.groom)} &amp; ${escape(w.bride)}</p><p class="jp-names">${escape(w.groomJapanese)} &amp; ${escape(w.brideJapanese)}</p>
+      <p class="names">${escape(w.groom)} &amp; ${escape(w.bride)}</p>
       <div class="message"><p>皆様にはおすこやかにお過ごしのことと<br>お慶び申し上げます</p>
       <p>このたび　私たちは<br>結婚式を挙げることになりました</p>
       <p>つきましては日頃のご厚誼を感謝するとともに<br>末永いおつきあいをお願いいたしたく<br>ささやかながら披露の小宴を催したいと存じます</p>
-      <p>ご多用中とは存じますが<br>ご出席くださいますようご案内申し上げます</p></div>
-      <div class="ceremony-invitation"><p>誠に恐縮でございますが 結婚式にもご参列賜りたく<br>当日は ${escape(gathering.time)} までに ${escape(w.venueJapanese)} ${escape(gathering.place)} に<br>お越しくださいますようお願い申し上げます</p>
+      <p>ご多用中とは存じますが<br>ご出席くださいますようご案内申し上げます</p>
+      <p>2026年10月吉日</p></div>
+      <p class="jp-names">${escape(w.groomJapanese)} &amp; ${escape(w.brideJapanese)}</p>
+      <div class="ceremony-invitation"><p>誠に恐縮でございますが 挙式にもご参列賜りたく<br>当日は ${escape(gathering.time)} までに ${escape(w.venueJapanese)} ${escape(gathering.place)} に<br>お越しくださいますようお願い申し上げます</p>
       <p>尚 クロークは3階 着替室は4階にございます</p></div>
       <section class="details"><h2>${escape(dateLabel(w.date))}</h2>
-      <div class="schedule"><div>集合<br><strong>${escape(gathering.time)}</strong><br>${escape(gathering.place)}</div><div>挙式<br><strong>${escape(w.ceremonyTime)}</strong></div><div>披露宴<br><strong>${escape(w.partyTime)}</strong></div></div>
+      <div class="schedule"><div>集合<br><strong>${escape(gathering.time)}</strong><br>${escape(gathering.place)}</div><div>挙式<br><strong>${escape(w.ceremonyTime)}</strong></div><div>受付<br><strong>挙式後</strong><br>3階</div><div>披露宴<br><strong>${escape(w.partyTime)}</strong></div></div>
+      <p class="address">${escape(gathering.place)}にお集まりください。なお、受付は挙式後・披露宴前に行います。</p>
       <p class="venue">${escape(w.venueJapanese)}</p><p class="address">${escape(w.venue)}<br>${escape(w.address)}</p><p class="access">${escape(w.access)}</p>
       <p class="address"><a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(w.mapQuery)}">会場の地図をGoogle マップで見る</a></p></section>
       <p class="reply">お手数ですが ${escape(dateLabel(w.deadline))} までに<br>お送りしたWeb招待状のフォームより<br>出欠をお知らせくださいますようお願いいたします</p>

@@ -9,7 +9,7 @@ vi.mock('@aws-sdk/lib-dynamodb', async () => {
 import { handler } from '../infra/functions/rsvp';
 import { responseSchema } from '../shared/validation';
 
-const valid = { token: 'a'.repeat(43), attendance: 'attending', name: '山田 花子', kana: 'やまだ はなこ', email: '', allergies: '卵', message: 'おめでとうございます', consent: true, website: '' };
+const valid = { token: 'a'.repeat(43), attendance: 'attending', name: '山田 花子', kana: 'やまだ はなこ', email: '', allergies: '卵', message: 'おめでとうございます', website: '' };
 function invoke(body: unknown, options: Partial<APIGatewayProxyEventV2> = {}) {
   const event = { requestContext: { http: { method: 'POST' } }, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), ...options } as APIGatewayProxyEventV2;
   return handler(event, {} as Context, () => {}) as Promise<{ statusCode: number; body: string; headers: Record<string, string> }>;
@@ -71,8 +71,8 @@ describe('出欠受付', () => {
     expect((await invoke({ ...valid, attendance: 'declining' })).statusCode).toBe(201);
     expect(send.mock.calls[1][0].input.TransactItems[1].Put.Item.allergies).toBe('');
   });
-  it('同意なし・不正なメール・未知の項目を拒否する', async () => {
-    for (const body of [{ ...valid, consent: false }, { ...valid, email: 'invalid' }, { ...valid, admin: true }]) expect((await invoke(body)).statusCode).toBe(400);
+  it('不正なメール・未知の項目を拒否する', async () => {
+    for (const body of [{ ...valid, email: 'invalid' }, { ...valid, admin: true }]) expect((await invoke(body)).statusCode).toBe(400);
     expect(send).not.toHaveBeenCalled();
   });
   it('メールアドレスは省略可能、入力時は正規化する', () => {
