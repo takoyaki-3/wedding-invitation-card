@@ -16,6 +16,7 @@
 .photo-controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px}
 .photo-controls button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:50%;background:transparent}
 .photo-controls button:hover{background:#e9ecdf}
+.venue-photo iframe{display:block;width:100%;height:100%;border:0}
 .wedding-seal-logo{background:#eef0e5;outline:none;border-radius:50%;padding:8px;object-fit:contain;transform:rotate(-12deg)}
 .photo-counter{font:18px var(--serif);letter-spacing:2px;min-width:65px}
 .photo-controls .photo-playback{border-radius:24px;padding:0 14px;font-size:10px}

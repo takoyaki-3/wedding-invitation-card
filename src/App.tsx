@@ -12,6 +12,7 @@ const dateParts = date ? new Intl.DateTimeFormat('en-US', { year: 'numeric', mon
 const part = (type: string) => dateParts.find(p => p.type === type)?.value || '—';
 const weekday = date ? new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'Asia/Tokyo' }).format(date) : 'COMING SOON';
 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.mapQuery)}`;
+const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(wedding.mapQuery)}&output=embed`;
 
 function Botanical({ className = '' }: { className?: string }) {
   return <svg className={className} viewBox="0 0 150 220" fill="none" aria-hidden="true"><g stroke="currentColor" strokeWidth="1.1"><path d="M73 216C68 157 83 93 98 15M76 178C46 151 34 111 35 75M79 150C104 126 122 100 132 68M83 110C68 89 61 65 63 41"/>{[[73,192,-38],[74,165,32],[79,135,-35],[87,90,30],[93,56,-25],[42,111,-43],[52,140,33],[111,109,35],[122,88,-20],[65,67,-26]].map(([x,y,r], i) => <ellipse key={i} cx={x} cy={y} rx="7" ry="19" transform={`rotate(${r} ${x} ${y})`} />)}<path d="M98 31C86 15 93 4 103 2C109 13 109 21 98 31Z"/></g></svg>;
@@ -130,8 +131,8 @@ function App() {
       </section>
 
       <section id="access" className="access-section section-anchor">
-        <div className="venue-photo"><img src="/wedding-venue.jpg" loading="lazy" alt="光が差し込むウェディング会場のイメージ" /><span>THE PLACE WHERE WE SAY “I DO”</span></div>
-        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a><p className="venue-note">会場写真はイメージです</p></div>
+        <div className="venue-photo"><iframe src={mapEmbedUrl} title={`${wedding.venueJapanese}へのアクセスマップ`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div>
+        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div>
       </section>
 
       <section id="rsvp" className="rsvp-section section-anchor">
