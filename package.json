@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "tsc --noEmit && vite build",
+    "dev": "npm run invitation:pdf && vite --host 0.0.0.0",
+    "build": "tsc --noEmit && npm run invitation:pdf && vite build",
+    "invitation:pdf": "tsx scripts/create-invitation-pdf.ts",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:e2e": "playwright test",

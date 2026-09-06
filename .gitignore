@@ -8,3 +8,4 @@ cdk-outputs.json
 wedding.config.json
 playwright-report/
 test-results/
+public/invitation/*.pdf

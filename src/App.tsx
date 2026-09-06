@@ -97,6 +97,7 @@ function App() {
           <div className="hero-date"><span>{date ? `${part('year')}.${part('month')}.${part('day')}` : 'Date to be announced'}</span><span className="day-label">{date ? weekday.toUpperCase() : 'OUR WEDDING'}</span></div>
           <a className="primary-button hero-button" href="#rsvp">出欠のご回答 <ArrowRight size={16} /></a>
           <p className="deadline-small">お返事は {jpDate(wedding.deadline)} まで</p>
+          <a className="outline-button invitation-download" href={`/invitation/${new URLSearchParams(window.location.search).get('group') === 'family' ? 'family' : 'friend'}.pdf`} download="結婚式の招待状.pdf">紙の招待状をダウンロード（PDF）<ArrowDown size={15} aria-hidden="true" /></a>
         </div>
         <div className="hero-art">
           <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER, WITH YOU.</div></div>

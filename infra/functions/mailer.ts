@@ -3,6 +3,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { weddingSchema } from '../../shared/wedding';
+import { renderEmail } from './email-template';
 
 const db = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const ses = new SESv2Client({});
@@ -39,7 +40,10 @@ export const handler: DynamoDBStreamHandler = async event => {
         ConfigurationSetName: process.env.SES_CONFIGURATION_SET || undefined,
         Destination: { ToAddresses: [destination.email] },
         ReplyToAddresses: [wedding.contactEmail],
-        Content: { Simple: { Subject: { Data: destination.subject, Charset: 'UTF-8' }, Body: { Text: { Data: destination.body, Charset: 'UTF-8' } } } }
+        Content: { Simple: { Subject: { Data: destination.subject, Charset: 'UTF-8' }, Body: {
+          Text: { Data: destination.body, Charset: 'UTF-8' },
+          Html: { Data: renderEmail(wedding, destination.body, destination.flag === 'guestMailSent'), Charset: 'UTF-8' }
+        } } }
       }));
       await db.send(new UpdateCommand({ TableName: process.env.TABLE_NAME, Key: { pk }, UpdateExpression: 'SET #flag = :true', ConditionExpression: 'attribute_exists(pk)', ExpressionAttributeNames: { '#flag': destination.flag }, ExpressionAttributeValues: { ':true': true } }));
       } catch {
