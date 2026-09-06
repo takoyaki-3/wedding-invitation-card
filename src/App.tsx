@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Github, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
 import { CoupleSlideshow } from './CoupleSlideshow';
 import { gatheringFromSearch } from '../shared/invitation';
@@ -84,7 +84,7 @@ function App() {
         <a className="nav-rsvp" href="#rsvp" onClick={() => setMenu(false)}>出欠のご回答 <ArrowRight size={14} /></a>
       </nav>
       <button className="menu-toggle" onClick={() => setMenu(!menu)} aria-label={menu ? 'メニューを閉じる' : 'メニューを開く'} aria-expanded={menu}>{menu ? <X /> : <Menu />}</button>
-      <a className="github-link" href="https://github.com/takoyaki-3/wedding-invitation-card" target="_blank" rel="noopener noreferrer" aria-label="GitHubでソースコードを見る（新しいタブ）" title="GitHubでソースコードを見る"><Github size={21} strokeWidth={1.6} aria-hidden="true" /></a>
+      <a className="github-link" href="https://github.com/takoyaki-3/wedding-invitation-card" target="_blank" rel="noopener noreferrer" aria-label="GitHubでソースコードを見る（新しいタブ）" title="GitHubでソースコードを見る"><img src="/github-mark.svg" width={21} height={21} alt="" aria-hidden="true" /></a>
     </header>
 
     <main>
