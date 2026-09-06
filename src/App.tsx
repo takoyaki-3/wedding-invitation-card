@@ -116,7 +116,12 @@ function App() {
       <section id="message" className="message-section section-anchor">
         <div className="section-kicker">01 — MESSAGE</div>
         <h2>With all our hearts.</h2><p className="section-subtitle">大切な皆さまへ</p>
-        <div className="message-body"><p>これまで私たちを支えてくださった皆さまへ<br />感謝の気持ちを込めて<br />結婚式を挙げることになりました</p><p>いつもそばにいてくれたあなたと<br />笑顔あふれる あたたかなひとときを<br />一緒に過ごせたら幸せです</p><p>おいそがしい中とは存じますが<br />ぜひ私たちの新しい門出を見届けてください</p></div>
+        <div className="message-body">
+          <p>皆様にはおすこやかにお過ごしのことと<br />お慶び申し上げます</p>
+          <p>このたび　私たちは<br />結婚式を挙げることになりました</p>
+          <p>つきましては日頃のご厚誼を感謝するとともに<br />末永いおつきあいをお願いいたしたく<br />ささやかながら披露の小宴を催したいと存じます</p>
+          <p>ご多用中とは存じますが<br />ご出席くださいますようご案内申し上げます</p>
+        </div>
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
         <Botanical className="message-botanical" />
       </section>
@@ -126,6 +131,10 @@ function App() {
       <section id="details" className="details-section section-anchor">
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
         <div className="event-date"><CalendarDays size={19} strokeWidth={1.4} /><span>{jpDate(wedding.date)}{date && <small>（{new Intl.DateTimeFormat('ja-JP', { weekday: 'short', timeZone: 'Asia/Tokyo' }).format(date)}）</small>}</span></div>
+        <div className="ceremony-invitation">
+          <p>誠に恐縮でございますが 結婚式にもご参列賜りたく<br />当日は {gathering.time} までに<br />{wedding.venueJapanese} {gathering.place} に<br />お越しくださいますようお願い申し上げます</p>
+          <p>尚 クロークは3階 着替室は4階にございます</p>
+        </div>
         <div className="schedule-grid">
           {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>

@@ -17,22 +17,26 @@ try {
     const page = await browser.newPage();
     await page.setContent(`<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>Wedding Invitation</title><style>
       @page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;color:#435c49;background:#fff;font-family:'Yu Mincho','Noto Serif CJK JP','MS Mincho',serif}
-      main{width:210mm;height:297mm;padding:15mm 20mm;position:relative;text-align:center}
+      main{width:210mm;height:297mm;padding:13mm 20mm;position:relative;text-align:center}
       main:before{content:'';position:absolute;inset:9mm;border:1px solid #c6cebf;pointer-events:none}
-      .logo{width:22mm;height:22mm} .eyebrow{font:9pt Georgia,serif;letter-spacing:3pt;margin:3mm 0}
-      h1{font:italic 32pt Georgia,serif;margin:3mm 0 4mm}.names{font:21pt Georgia,serif;margin:0 0 2mm}.jp-names{font-size:12pt;letter-spacing:2pt;margin:0}
-      .message{font-size:10pt;line-height:2;margin:6mm 0}.message p{margin:0 0 2mm}
-      .details{border-top:1px solid #c6cebf;border-bottom:1px solid #c6cebf;padding:5mm 0;margin-top:5mm}
-      h2{font-size:14pt;font-weight:normal;margin:0 0 4mm}.schedule{display:flex;justify-content:center;gap:12mm;font-size:10pt;line-height:1.7}.schedule strong{font-size:14pt;font-weight:normal}
-      .venue{font-size:12pt;margin:4mm 0 1mm}.address,.access{font-size:9pt;line-height:1.8;margin:1mm 0;white-space:pre-line}
-      .reply{font-size:10pt;line-height:1.9;margin:5mm 0 0}.contact{font-size:8pt;margin-top:3mm}a{color:inherit;text-decoration:none}.closing{font:italic 14pt Georgia,serif;margin:5mm 0 0}
+      .logo{width:16mm;height:16mm} .eyebrow{font:9pt Georgia,serif;letter-spacing:3pt;margin:2mm 0}
+      h1{font:italic 28pt Georgia,serif;margin:2mm 0 3mm}.names{font:21pt Georgia,serif;margin:0 0 2mm}.jp-names{font-size:12pt;letter-spacing:2pt;margin:0}
+      .message{font-size:10pt;line-height:1.8;margin:4mm 0}.message p{margin:0 0 2mm}
+      .ceremony-invitation{font-size:9pt;line-height:1.8;margin:3mm 0}.ceremony-invitation p{margin:1mm 0}
+      .details{border-top:1px solid #c6cebf;border-bottom:1px solid #c6cebf;padding:3mm 0;margin-top:3mm}
+      h2{font-size:14pt;font-weight:normal;margin:0 0 2mm}.schedule{display:flex;justify-content:center;gap:12mm;font-size:10pt;line-height:1.7}.schedule strong{font-size:14pt;font-weight:normal}
+      .venue{font-size:12pt;margin:2mm 0 1mm}.address,.access{font-size:9pt;line-height:1.8;margin:1mm 0;white-space:pre-line}
+      .reply{font-size:10pt;line-height:1.9;margin:3mm 0 0}.contact{font-size:8pt;margin-top:2mm}a{color:inherit;text-decoration:none}.closing{font:italic 14pt Georgia,serif;margin:3mm 0 0}
     </style></head><body><main>
       <img class="logo" src="data:image/svg+xml;base64,${logo}" alt="Y & S">
       <p class="eyebrow">WE ARE GETTING MARRIED</p><h1>Wedding Invitation</h1>
       <p class="names">${escape(w.groom)} &amp; ${escape(w.bride)}</p><p class="jp-names">${escape(w.groomJapanese)} &amp; ${escape(w.brideJapanese)}</p>
-      <div class="message"><p>これまで私たちを支えてくださった皆さまへ<br>感謝の気持ちを込めて<br>結婚式を挙げることになりました</p>
-      <p>いつもそばにいてくれたあなたと<br>笑顔あふれる あたたかなひとときを<br>一緒に過ごせたら幸せです</p>
-      <p>おいそがしい中とは存じますが<br>ぜひ私たちの新しい門出を見届けてください</p></div>
+      <div class="message"><p>皆様にはおすこやかにお過ごしのことと<br>お慶び申し上げます</p>
+      <p>このたび　私たちは<br>結婚式を挙げることになりました</p>
+      <p>つきましては日頃のご厚誼を感謝するとともに<br>末永いおつきあいをお願いいたしたく<br>ささやかながら披露の小宴を催したいと存じます</p>
+      <p>ご多用中とは存じますが<br>ご出席くださいますようご案内申し上げます</p></div>
+      <div class="ceremony-invitation"><p>誠に恐縮でございますが 結婚式にもご参列賜りたく<br>当日は ${escape(gathering.time)} までに ${escape(w.venueJapanese)} ${escape(gathering.place)} に<br>お越しくださいますようお願い申し上げます</p>
+      <p>尚 クロークは3階 着替室は4階にございます</p></div>
       <section class="details"><h2>${escape(dateLabel(w.date))}</h2>
       <div class="schedule"><div>集合<br><strong>${escape(gathering.time)}</strong><br>${escape(gathering.place)}</div><div>挙式<br><strong>${escape(w.ceremonyTime)}</strong></div><div>披露宴<br><strong>${escape(w.partyTime)}</strong></div></div>
       <p class="venue">${escape(w.venueJapanese)}</p><p class="address">${escape(w.venue)}<br>${escape(w.address)}</p><p class="access">${escape(w.access)}</p>
