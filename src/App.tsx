@@ -134,7 +134,7 @@ function App() {
           <p>尚 クロークは3階 着替室は4階にございます</p>
         </div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13時', text: '披露宴前に3階にて受付を行います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13:00', text: '披露宴前に3階にて受付を行います。' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください。' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 

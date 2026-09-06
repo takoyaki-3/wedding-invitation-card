@@ -20,22 +20,22 @@ http://localhost:5173 を開きます。停止は `Ctrl + C`。ローカルは�
 
 読み込みの優先順位は、シェル・CIの環境変数 → `.env.local` → `.env` です。Vite・CDK・招待リンク発行スクリプトが共通のローダーを使用します。必須項目が不足している場合はエラーになります。
 
-| 環境変数 | 用途 |
-| --- | --- |
-| `WEDDING_GROOM` / `WEDDING_BRIDE` | 英字のお名前 |
-| `WEDDING_GROOM_JAPANESE` / `WEDDING_BRIDE_JAPANESE` | 日本語のお名前 |
-| `WEDDING_DATE` / `WEDDING_END_DATE` | 挙式開始・披露宴終了日時。未定なら空欄 |
-| `WEDDING_DEADLINE` | 出欠回答締切。必須 |
+| 環境変数                                                                  | 用途                                                                                         |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `WEDDING_GROOM` / `WEDDING_BRIDE`                                         | 英字のお名前                                                                                 |
+| `WEDDING_GROOM_JAPANESE` / `WEDDING_BRIDE_JAPANESE`                       | 日本語のお名前                                                                               |
+| `WEDDING_DATE` / `WEDDING_END_DATE`                                       | 挙式開始・披露宴終了日時。未定なら空欄                                                       |
+| `WEDDING_DEADLINE`                                                        | 出欠回答締切。必須                                                                           |
 | `WEDDING_RECEPTION_TIME` / `WEDDING_CEREMONY_TIME` / `WEDDING_PARTY_TIME` | 従来の受付時刻（現在の集合案内では未使用）・挙式時刻・披露宴の時間帯。空欄なら「後日ご案内」 |
-| `WEDDING_VENUE` / `WEDDING_VENUE_JAPANESE` | 英字・日本語の会場名 |
-| `WEDDING_ADDRESS` / `WEDDING_ACCESS` / `WEDDING_MAP_QUERY` | 住所・アクセス案内・地図検索語 |
-| `WEDDING_CONTACT_EMAIL` | 招待状とメール本文の問い合わせ先 |
-| `SES_SENDER_EMAIL` | 送信元。空欄なら問い合わせ先を使用 |
-| `SES_IDENTITY_DOMAIN` / `SES_IDENTITY_ARN` | 認証済みSES ID。ARNを優先 |
-| `SES_CONFIGURATION_SET_NAME` | 使用するSES設定セット。不要なら空欄 |
-| `RSVP_GROOM_EMAIL` | 新郎への出欠通知先 |
-| `RSVP_BRIDE_EMAIL` | 新婦への出欠通知先 |
-| `RSVP_HOST_EMAIL` | 追加の通知先（従来設定との互換用）。不要なら空欄 |
+| `WEDDING_VENUE` / `WEDDING_VENUE_JAPANESE`                                | 英字・日本語の会場名                                                                         |
+| `WEDDING_ADDRESS` / `WEDDING_ACCESS` / `WEDDING_MAP_QUERY`                | 住所・アクセス案内・地図検索語                                                               |
+| `WEDDING_CONTACT_EMAIL`                                                   | 招待状とメール本文の問い合わせ先                                                             |
+| `SES_SENDER_EMAIL`                                                        | 送信元。空欄なら問い合わせ先を使用                                                           |
+| `SES_IDENTITY_DOMAIN` / `SES_IDENTITY_ARN`                                | 認証済みSES ID。ARNを優先                                                                    |
+| `SES_CONFIGURATION_SET_NAME`                                              | 使用するSES設定セット。不要なら空欄                                                          |
+| `RSVP_GROOM_EMAIL`                                                        | 新郎への出欠通知先                                                                           |
+| `RSVP_BRIDE_EMAIL`                                                        | 新婦への出欠通知先                                                                           |
+| `RSVP_HOST_EMAIL`                                                         | 追加の通知先（従来設定との互換用）。不要なら空欄                                             |
 
 日時は `2099-10-22T11:00:00+09:00` のようにタイムゾーン込みで指定してください。値に空白や `#` がある場合はダブルクォートで囲みます。開始・終了日時が設定されるとカレンダーへの追加が表示されます。
 
@@ -100,7 +100,7 @@ CDKは作成したCloudFrontのドメインから回答送信URLを生成し、S
 
 SES IDを指定しなければ送信元のメールアドレスIDを作成するので、届いた確認メールで認証を完了してください。既存のドメイン・IDを使う場合は環境変数に設定します。既存IDに既定の設定セットがある場合は `SES_CONFIGURATION_SET_NAME` も設定してください。CDKは指定されたIDと設定セットに限定して送信を許可します。
 
-ゲストの任意アドレスへ送るには、利用リージョンで[SESの本番アクセス](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html)が必要です。[SESのID認証](https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html)も確認してください。SESは受信メールボックスを作成しないため、問い合わせ先の受信設定は既存のメールサービス側で行います。
+ゲストの任意アドレスへ送るには、利用リージョンで[SESの本番アクセス](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html)が必要です。[SESのID認証](https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html)も確認してください。SESは受信メールボックスを作成しないため、問い合わせ先の受信設定は既存のメールサービス側で行います。。
 
 従来のCDKコンテキスト `senderEmail`、`hostEmail`、`sesIdentityDomain`、`sesIdentityArn`、`sesConfigurationSetName` による上書きも可能ですが、実際の値を `cdk.json` に書き込まず、環境変数ファイルで管理してください。
 
@@ -138,7 +138,14 @@ SES受理と送信済みフラグの保存は別処理なので、その間の�
 障害解消後、対象回答と `guestMailSent` を確認し、出力 `MailerFunctionName` のLambdaを以下のテストイベントで再実行できます。
 
 ```json
-{"Records":[{"eventName":"INSERT","dynamodb":{"Keys":{"pk":{"S":"RSVP#対象回答のハッシュ"}}}}]}
+{
+  "Records": [
+    {
+      "eventName": "INSERT",
+      "dynamodb": { "Keys": { "pk": { "S": "RSVP#対象回答のハッシュ" } } }
+    }
+  ]
+}
 ```
 
 `npx tsx scripts/smoke-live.ts` は実AWSに使い捨ての回答を保存し、AWSシミュレーターへのメール送信を検証します。主催者通知が設定された環境では、お二人にもテスト回答の通知が届きます。この実行のテストレコードは終了時に削除します。`npx tsx scripts/check-live-ui.ts` は公開URLの表示を検証します。いずれも `cdk-outputs.json` を参照します。
