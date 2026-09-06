@@ -76,7 +76,13 @@ export class WeddingStack extends Stack {
     }));
     new cloudwatch.Alarm(this, 'EmailFailureAlarm', { metric: deadLetters.metricApproximateNumberOfMessagesVisible(), threshold: 1, evaluationPeriods: 1, alarmDescription: '回答コピーの送信に失敗しました。DynamoDBの回答とEmailFailuresキューを確認してください。', treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING });
 
-    const api = new apigw.HttpApi(this, 'Api');
+    const api = new apigw.HttpApi(this, 'Api', {
+      corsPreflight: {
+        allowOrigins: ['*'],
+        allowMethods: [apigw.CorsHttpMethod.POST, apigw.CorsHttpMethod.OPTIONS],
+        allowHeaders: ['Content-Type']
+      }
+    });
     api.addRoutes({ path: '/api/rsvp', methods: [apigw.HttpMethod.POST], integration: new HttpLambdaIntegration('RegisterIntegration', register) });
     const stage = api.defaultStage!.node.defaultChild as apigw.CfnStage;
     stage.defaultRouteSettings = { throttlingBurstLimit: 10, throttlingRateLimit: 2 };
@@ -93,7 +99,7 @@ export class WeddingStack extends Stack {
         frameOptions: { frameOption: cloudfront.HeadersFrameOption.DENY, override: true },
         referrerPolicy: { referrerPolicy: cloudfront.HeadersReferrerPolicy.NO_REFERRER, override: true },
         strictTransportSecurity: { accessControlMaxAge: Duration.days(365), includeSubdomains: true, override: true },
-        contentSecurityPolicy: { contentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'", override: true }
+        contentSecurityPolicy: { contentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://images.unsplash.com data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'", override: true }
       }
     });
     const siteOrigin = origins.S3BucketOrigin.withOriginAccessControl(bucket);

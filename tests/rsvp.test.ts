@@ -12,7 +12,7 @@ import { responseSchema } from '../shared/validation';
 const valid = { token: 'a'.repeat(43), attendance: 'attending', name: '山田 花子', kana: 'やまだ はなこ', email: '', allergies: '卵', message: 'おめでとうございます', consent: true, website: '' };
 function invoke(body: unknown, options: Partial<APIGatewayProxyEventV2> = {}) {
   const event = { requestContext: { http: { method: 'POST' } }, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), ...options } as APIGatewayProxyEventV2;
-  return handler(event, {} as Context, () => {}) as Promise<{ statusCode: number; body: string }>;
+  return handler(event, {} as Context, () => {}) as Promise<{ statusCode: number; body: string; headers: Record<string, string> }>;
 }
 
 beforeEach(() => {
@@ -22,6 +22,28 @@ beforeEach(() => {
 });
 
 describe('出欠受付', () => {
+  it('成功・入力エラー・内部エラーでもCORSヘッダーを返す', async () => {
+    send.mockResolvedValue({});
+    const success = await invoke(valid);
+    const invalid = await invoke(null, { body: '{' });
+    send.mockRejectedValue(new Error('unavailable'));
+    const failure = await invoke(valid);
+    expect([success.statusCode, invalid.statusCode, failure.statusCode]).toEqual([201, 400, 503]);
+    for (const response of [success, invalid, failure]) {
+      expect(response.headers['Access-Control-Allow-Origin']).toBe('*');
+    }
+  });
+  it('OPTIONSは本文なしでCORSを返し、DBへアクセスしない', async () => {
+    const response = await invoke(null, { requestContext: { http: { method: 'OPTIONS' } } as APIGatewayProxyEventV2['requestContext'] });
+    expect(response.statusCode).toBe(204);
+    expect(response.body).toBe('');
+    expect(response.headers).toMatchObject({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
+    expect(send).not.toHaveBeenCalled();
+  });
   it('メールなしで登録し、生の招待トークンを保存しない', async () => {
     send.mockResolvedValue({});
     expect((await invoke(valid)).statusCode).toBe(201);

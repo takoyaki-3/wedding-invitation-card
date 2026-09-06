@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Github, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
+import { CoupleSlideshow } from './CoupleSlideshow';
 import { gatheringFromSearch } from '../shared/invitation';
 import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
 
@@ -114,6 +115,8 @@ function App() {
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
         <Botanical className="message-botanical" />
       </section>
+
+      <CoupleSlideshow />
 
       <section id="details" className="details-section section-anchor">
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>

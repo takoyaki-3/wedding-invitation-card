@@ -6,9 +6,17 @@ import { responseSchema } from '../../shared/validation';
 
 const db = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
-const reply = (statusCode: number, message: string) => ({ statusCode, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, body: JSON.stringify({ message }) });
+const headers = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'Cache-Control': 'no-store',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+const reply = (statusCode: number, message: string) => ({ statusCode, headers, body: JSON.stringify({ message }) });
 
 export const handler: APIGatewayProxyHandlerV2 = async event => {
+  if (event.requestContext.http.method === 'OPTIONS') return { statusCode: 204, headers, body: '' };
   if (event.requestContext.http.method !== 'POST') return reply(405, 'この操作は対応していません。');
   const contentType = event.headers['content-type'] || '';
   if (!contentType.toLowerCase().startsWith('application/json')) return reply(415, 'JSON形式で送信してください。');

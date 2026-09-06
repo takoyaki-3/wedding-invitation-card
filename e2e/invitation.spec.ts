@@ -1,8 +1,39 @@
 import { test, expect } from '@playwright/test';
 import { loadEnvironment } from '../config/environment';
+import { existsSync, readdirSync } from 'node:fs';
 
 const { wedding } = loadEnvironment();
 const endpoint = 'https://api.example.com/custom-rsvp';
+const photoDirectory = new URL('../public/photo/', import.meta.url);
+const photoCount = existsSync(photoDirectory) ? readdirSync(photoDirectory).filter(name => /\.(jpe?g|png|webp|avif)$/i.test(name)).length : 0;
+
+test('ツーショットの表示、前後移動と自動再生の停止', async ({ page }, testInfo) => {
+  test.skip(photoCount < 2, 'ローカルの写真を2枚以上配置した環境で実行');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const gallery = page.getByRole('region', { name: 'The two of us.' });
+  await gallery.scrollIntoViewIfNeeded();
+  const photo = gallery.locator('img');
+  await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  await expect(gallery.getByRole('button', { name: 'スライドショーを再生' })).toBeVisible();
+  const first = await photo.getAttribute('src');
+  await gallery.getByRole('button', { name: '前の写真', exact: true }).click();
+  await expect(photo).toHaveAttribute('alt', `ふたりのツーショット写真 ${photoCount}`);
+  await gallery.getByRole('button', { name: '次の写真', exact: true }).click();
+  await expect(photo).toHaveAttribute('src', first!);
+  await page.clock.install();
+  await gallery.getByRole('button', { name: 'スライドショーを再生' }).click();
+  await page.mouse.move(0, 0);
+  await page.clock.fastForward(5100);
+  await expect(photo).toHaveAttribute('alt', 'ふたりのツーショット写真 2');
+  await gallery.getByRole('button', { name: 'スライドショーを一時停止' }).evaluate(button => button.blur());
+  await gallery.getByRole('button', { name: 'スライドショーを一時停止' }).click();
+  await page.clock.fastForward(10000);
+  await expect(photo).toHaveAttribute('alt', 'ふたりのツーショット写真 2');
+  await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await gallery.screenshot({ path: `test-results/${testInfo.project.name}-couple-gallery.png` });
+});
 
 test('招待状の表示、任意メールなしの出席、欠席フォーム', async ({ page }, testInfo) => {
   const errors: string[] = [];
