@@ -11,7 +11,7 @@ test('ツーショットの表示、前後移動と自動再生の停止', async
   test.skip(photoCount < 2, 'ローカルの写真を2枚以上配置した環境で実行');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  const gallery = page.getByRole('region', { name: 'The two of us.' });
+  const gallery = page.getByRole('region', { name: 'ふたりの写真' });
   await gallery.scrollIntoViewIfNeeded();
   const photo = gallery.locator('img');
   await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
@@ -42,7 +42,7 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
   const github = page.getByRole('link', { name: 'GitHubでソースコードを見る（新しいタブ）' });
   await expect(github).toBeVisible();
   await expect(github).toHaveAttribute('href', 'https://github.com/takoyaki-3/wedding-invitation-card');
-  await expect(page.getByRole('heading', { name: 'Together, a beautiful beginning.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: `${wedding.groom} & ${wedding.bride}`, exact: true })).toBeVisible();
   await expect(page.getByText(wedding.groomJapanese, { exact: false }).first()).toBeVisible();
   await expect(page.getByText(wedding.venueJapanese, { exact: true })).toBeVisible();
   await expect(page.getByText('プレビュー版：', { exact: false })).toBeVisible();

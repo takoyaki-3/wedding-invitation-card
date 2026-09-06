@@ -39,16 +39,13 @@ export function CoupleSlideshow() {
     setIndex(current => (current + step + photos.length) % photos.length);
   }
 
-  return <section ref={section} className="couple-gallery section-anchor" aria-labelledby="photos-title" aria-roledescription="カルーセル"
+  return <section ref={section} className="couple-gallery" aria-label="ふたりの写真" aria-roledescription="カルーセル"
     onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
     onFocusCapture={event => {
       if (!(event.target as HTMLElement).closest('.photo-playback')) setPaused(true);
     }}>
-    <div className="section-kicker">OUR MOMENTS</div>
-    <h2 id="photos-title">The two of us.</h2>
-    <p className="section-subtitle">ふたりの思い出</p>
     <div className="couple-photo-frame" aria-live={paused ? 'polite' : 'off'}>
-      <img key={photos[index]} src={photos[index]} alt={`ふたりのツーショット写真 ${index + 1}`} loading="lazy" decoding="async" />
+      <img key={photos[index]} src={photos[index]} alt={`ふたりのツーショット写真 ${index + 1}`} loading="eager" fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" />
     </div>
     {photos.length > 1 && <div className="photo-controls">
       <button type="button" onClick={() => move(-1)} aria-label="前の写真"><ChevronLeft size={18} /></button>

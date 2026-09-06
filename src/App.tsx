@@ -90,18 +90,12 @@ function App() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <div className="eyebrow"><span /> WE ARE GETTING MARRIED</div>
-          <h1 id="hero-title">Together,<br /><em>a beautiful</em><br />beginning.</h1>
+          <CoupleSlideshow />
           <p className="hero-japanese">大切なあなたと、はじまりの一日を。</p>
-          <div className="couple-names">{wedding.groom} <span>&</span> {wedding.bride}</div>
+          <h1 id="hero-title" className="couple-names">{wedding.groom} <span>&</span> {wedding.bride}</h1>
           <div className="hero-date"><span>{date ? `${part('year')}.${part('month')}.${part('day')}` : 'Date to be announced'}</span><span className="day-label">{date ? weekday.toUpperCase() : 'OUR WEDDING'}</span></div>
           <a className="primary-button hero-button" href="#rsvp">出欠のご回答 <ArrowRight size={16} /></a>
           <p className="deadline-small">お返事は {jpDate(wedding.deadline)} まで</p>
-        </div>
-        <div className="hero-art">
-          <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER, WITH YOU.</div></div>
-          <div className="wedding-seal"><Flower2 size={24} strokeWidth={1} /><span>WITH LOVE</span><strong>{wedding.groom[0]} & {wedding.bride[0]}</strong><span>{date ? `${part('month')}.${part('day')}.${part('year')}` : 'OUR WEDDING'}</span></div>
-          <Botanical className="hero-botanical" />
-          <span className="side-note">OUR NEXT CHAPTER STARTS HERE</span>
         </div>
         <a className="scroll-note" href="#message">SCROLL TO DISCOVER <ArrowDown size={13} /></a>
       </section>
@@ -115,8 +109,6 @@ function App() {
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
         <Botanical className="message-botanical" />
       </section>
-
-      <CoupleSlideshow />
 
       <section id="details" className="details-section section-anchor">
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
