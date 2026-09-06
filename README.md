@@ -24,9 +24,9 @@ http://localhost:5173 を開きます。停止は `Ctrl + C`。ローカルは�
 | --- | --- |
 | `WEDDING_GROOM` / `WEDDING_BRIDE` | 英字のお名前 |
 | `WEDDING_GROOM_JAPANESE` / `WEDDING_BRIDE_JAPANESE` | 日本語のお名前 |
-| `WEDDING_DATE` / `WEDDING_END_DATE` | 挙式開始・終了日時。未定なら空欄 |
+| `WEDDING_DATE` / `WEDDING_END_DATE` | 挙式開始・披露宴終了日時。未定なら空欄 |
 | `WEDDING_DEADLINE` | 出欠回答締切。必須 |
-| `WEDDING_RECEPTION_TIME` / `WEDDING_CEREMONY_TIME` / `WEDDING_PARTY_TIME` | 受付・挙式・披露宴の開始時刻。空欄なら「後日ご案内」 |
+| `WEDDING_RECEPTION_TIME` / `WEDDING_CEREMONY_TIME` / `WEDDING_PARTY_TIME` | 従来の受付時刻（現在の集合案内では未使用）・挙式時刻・披露宴の時間帯。空欄なら「後日ご案内」 |
 | `WEDDING_VENUE` / `WEDDING_VENUE_JAPANESE` | 英字・日本語の会場名 |
 | `WEDDING_ADDRESS` / `WEDDING_ACCESS` / `WEDDING_MAP_QUERY` | 住所・アクセス案内・地図検索語 |
 | `WEDDING_CONTACT_EMAIL` | 招待状とメール本文の問い合わせ先 |
@@ -107,8 +107,11 @@ SES IDを指定しなければ送信元のメールアドレスIDを作成する
 ## 招待リンク・回答の管理
 
 ```powershell
-npm run invite -- "ゲストのお名前"
+npm run invite -- "ゲストのお名前" "親族"
+npm run invite -- "ゲストのお名前" "友人"
 ```
+
+区分は必須です。親族は `?group=family`（11:25・4階親族控室）、友人は `?group=friend`（12:00・4階ロビー）の集合案内を表示します。未指定・不明な区分は友人と同じ案内になります。区分はURLのクエリパラメータだけで切り替え、個人や招待レコード・回答データには紐づけません。
 
 表示される専用URLをゲストに個別にお渡しください。コマンドは招待レコードとURLを作成するだけで、招待メールを送信しません。リンク発行時のメールアドレスは不要です。
 

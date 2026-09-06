@@ -45,8 +45,10 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
     payload = route.request().postDataJSON();
     await route.fulfill({ status: 201, json: { message: '回答を受け付けました。' } });
   });
-  await page.goto(`/#invite=${token}`);
-  await expect(page).toHaveURL('http://127.0.0.1:5173/');
+  await page.goto(`/?group=family#invite=${token}`);
+  await expect(page).toHaveURL('http://127.0.0.1:5173/?group=family');
+  await expect(page.locator('.schedule-card').first()).toContainText('11:25');
+  await expect(page.locator('.schedule-card').first()).toContainText('4階親族控室');
   await page.getByLabel('お名前', { exact: false }).fill('山田 花子');
   await page.getByLabel('ふりがな', { exact: false }).fill('やまだ はなこ');
   await page.getByRole('checkbox').check();
@@ -54,6 +56,19 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   await expect(page.getByRole('heading', { name: 'ご回答ありがとうございます' })).toBeVisible();
   expect(payload?.token).toBe(token);
   expect(payload?.email).toBe('');
+  expect(payload).not.toHaveProperty('group');
+});
+
+test('クエリの区分に応じて集合案内を表示する', async ({ page }) => {
+  for (const query of ['', '?group=friend', '?group=unknown', '?group=family']) {
+    await page.goto(`/${query}`);
+    const gathering = page.locator('.schedule-card').first();
+    await expect(gathering).toContainText(query === '?group=family' ? '11:25' : '12:00');
+    await expect(gathering).toContainText(query === '?group=family' ? '4階親族控室' : '4階ロビー');
+    await expect(page.locator('.schedule-card').nth(1)).toContainText(wedding.ceremonyTime);
+    await expect(page.locator('.schedule-card').nth(2)).toContainText(wedding.partyTime);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
 });
 
 test('招待リンクなしの本番フォームは送信不可', async ({ page }) => {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Github, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
+import { gatheringFromSearch } from '../shared/invitation';
 import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
 
 const wedding = __WEDDING_CONFIG__;
@@ -17,6 +18,7 @@ function Botanical({ className = '' }: { className?: string }) {
 
 function App() {
   const [menu, setMenu] = useState(false);
+  const [gathering] = useState(() => gatheringFromSearch(window.location.search));
   const [runtime, setRuntime] = useState<RuntimeConfig | null>(null);
   const [configError, setConfigError] = useState(false);
   const [attendance, setAttendance] = useState<'attending' | 'declining'>('attending');
@@ -117,7 +119,7 @@ function App() {
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
         <div className="event-date"><CalendarDays size={19} strokeWidth={1.4} /><span>{jpDate(wedding.date)}{date && <small>（{new Intl.DateTimeFormat('ja-JP', { weekday: 'short', timeZone: 'Asia/Tokyo' }).format(date)}）</small>}</span></div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '受付', time: wedding.receptionTime, text: 'お時間に余裕をもってお越しください' }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 

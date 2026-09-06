@@ -3,12 +3,11 @@ import { readFile } from 'node:fs/promises';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { loadEnvironment } from '../config/environment';
+import { createInviteUrl, parseInviteArgs } from '../shared/invitation';
 
 const { wedding } = loadEnvironment();
 
-const args = process.argv.slice(2);
-const name = args[0];
-if (!name || args.length !== 1) throw new Error('使い方: npm run invite -- "ゲストのお名前"（AWS_PROFILE / AWS_REGION はデプロイ時と同じものを指定）');
+const { name, label, group } = parseInviteArgs(process.argv.slice(2));
 const outputs = JSON.parse(await readFile('cdk-outputs.json', 'utf8')).WeddingInvitation;
 if (!outputs?.TableName || !outputs?.WebsiteUrl) throw new Error('デプロイ結果 cdk-outputs.json が見つかりません');
 const expiresAt = Math.floor(Date.parse(wedding.deadline) / 1000);
@@ -17,4 +16,4 @@ const token = randomBytes(32).toString('base64url');
 const digest = createHash('sha256').update(token).digest('hex');
 const db = DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || 'ap-northeast-1' }));
 await db.send(new PutCommand({ TableName: outputs.TableName, Item: { pk: `INVITE#${digest}`, guestName: name, expiresAt, disabled: false, createdAt: new Date().toISOString() }, ConditionExpression: 'attribute_not_exists(pk)' }));
-console.log(`招待リンク（${name} 様）\n${outputs.WebsiteUrl}/#invite=${token}\nこのリンクを対象のゲストに個別にお渡しください。`);
+console.log(`招待リンク（${name} 様・${label}）\n${createInviteUrl(outputs.WebsiteUrl, token, group)}\nこのリンクを対象のゲストに個別にお渡しください。`);
