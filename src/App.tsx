@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Mail, MapPin, Menu, Phone, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
 import { CoupleSlideshow } from './CoupleSlideshow';
-import { RailwayArch, RailWaterMotif, WaterRipples } from './RailWaterMotif';
+import { RailwayArch, WaterRipples } from './RailWaterMotif';
 import { gatheringFromSearch } from '../shared/invitation';
 import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
 
@@ -91,7 +91,6 @@ function App() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <div className="eyebrow"><span /> WE ARE GETTING MARRIED</div>
-          {/* <RailWaterMotif className="hero-motif" /> */}
           <h1 id="hero-title">Together,<br /><em>a beautiful</em><br />beginning.</h1>
           <p className="hero-japanese">大切なあなたと、はじまりの一日を。</p>
           <div className="couple-names">{wedding.groom} <span>&</span> {wedding.bride}</div>
@@ -110,7 +109,7 @@ function App() {
         <a className="scroll-note" href="#message">SCROLL TO DISCOVER <ArrowDown size={13} /></a>
       </section>
 
-      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><RailWaterMotif className="ribbon-motif" /><span>{date ? `${weekday.toUpperCase()}, ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
+      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><span>{date ? `${weekday.toUpperCase()}, ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
 
       <section id="message" className="message-section section-anchor">
         <div className="section-kicker">01 — MESSAGE</div>
@@ -123,7 +122,6 @@ function App() {
           <p>2026年10月吉日</p>
         </div>
         <div className="japanese-names">{wedding.groomJapanese}<span>&</span>{wedding.brideJapanese}</div>
-        <RailWaterMotif className="message-motif" />
       </section>
 
       <CoupleSlideshow />
@@ -171,7 +169,7 @@ function App() {
         </div>
       </section>
 
-      <section className="closing"><RailWaterMotif /><p>We can't wait to celebrate with you.</p><span>あなたと過ごす 特別な一日を楽しみに。</span></section>
+      <section className="closing"><p>We can't wait to celebrate with you.</p><span>あなたと過ごす 特別な一日を楽しみに。</span></section>
     </main>
     <footer><a href="#" className="footer-names">{wedding.groom} <em>&</em> {wedding.bride}</a><span>WITH LOVE, ALWAYS.</span><a href={`mailto:${wedding.contactEmail}`}>お問い合わせ <ChevronRight size={12} /></a></footer>
   </>;
