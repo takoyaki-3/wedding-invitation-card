@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Leaf, Mail, MapPin, Menu, Plus, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Leaf, Mail, MapPin, Menu, Phone, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
 import { CoupleSlideshow } from './CoupleSlideshow';
 import { gatheringFromSearch } from '../shared/invitation';
@@ -140,13 +140,13 @@ function App() {
           <p>尚 クロークは3階 着替室は4階にございます</p>
         </div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '皆さまの前で 永遠の愛を誓います' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '挙式後', text: '披露宴前に3階にて受付を行います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: 'お食事と会話を ゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13時', text: '披露宴前に3階にて受付を行います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 
       <section id="access" className="access-section section-anchor">
         <div className="venue-photo"><iframe src={mapEmbedUrl} title={`${wedding.venueJapanese}へのアクセスマップ`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div>
-        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div>
+        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Phone size={17} /><p>03-3980-1111</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div>
       </section>
 
       <section id="rsvp" className="rsvp-section section-anchor">
