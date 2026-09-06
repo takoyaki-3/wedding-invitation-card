@@ -58,6 +58,9 @@ function App() {
     setError('');
     const fields = Object.fromEntries(new FormData(event.currentTarget));
     delete fields.attendanceChoice;
+    fields.name = `${String(fields.lastName || '').trim()} ${String(fields.firstName || '').trim()}`.trim();
+    fields.kana = `${String(fields.lastKana || '').trim()} ${String(fields.firstKana || '').trim()}`.trim();
+    for (const key of ['lastName', 'firstName', 'lastKana', 'firstKana']) delete fields[key];
     const parsed = responseSchema.safeParse({ ...fields, attendance, allergies: attendance === 'attending' ? fields.allergies || '' : '', consent: fields.consent === 'on', token: runtime.demo ? 'd'.repeat(43) : token });
     if (!parsed.success) { setError(parsed.error.issues[0]?.message || '入力内容をご確認ください'); return; }
     setSending(true);
@@ -154,7 +157,12 @@ function App() {
             {runtime && !runtime.demo && !token && <p className="form-error" role="alert">ご回答には、お送りした専用の招待リンクからアクセスしてください。</p>}
             {deadlinePassed && <p className="form-error">回答期限を過ぎています。新郎新婦へ直接ご連絡ください。</p>}
             <fieldset disabled={sending || deadlinePassed}><legend>ご出席について <span className="required">必須</span></legend><div className="attendance-options">{(['attending', 'declining'] as const).map(value => <label key={value} className={`attendance-option ${attendance === value ? 'selected' : ''}`}><input type="radio" name="attendanceChoice" value={value} checked={attendance === value} onChange={() => setAttendance(value)} /><span className="radio-mark">{attendance === value && <span />}</span>{value === 'attending' ? 'ご出席' : 'ご欠席'}<span className="attendance-en">{value === 'attending' ? 'Joyfully accepts' : 'Regretfully declines'}</span></label>)}</div></fieldset>
-            <div className="form-grid"><label>お名前 <span className="required">必須</span><input name="name" autoComplete="name" placeholder="山田 花子" maxLength={80} required disabled={sending} /></label><label>ふりがな <span className="required">必須</span><input name="kana" placeholder="やまだ はなこ" maxLength={100} required disabled={sending} /></label></div>
+            <fieldset disabled={sending}><legend>お名前 <span className="required">必須</span></legend><div className="form-grid"><label>姓<input name="lastName" autoComplete="family-name" placeholder="山田" maxLength={39} required /></label><label>名<input name="firstName" autoComplete="given-name" placeholder="花子" maxLength={40} required /></label></div></fieldset>
+            <fieldset disabled={sending}><legend>ふりがな <span className="required">必須</span></legend><div className="form-grid"><label>せい<input name="lastKana" placeholder="やまだ" maxLength={49} required /></label><label>めい<input name="firstKana" placeholder="はなこ" maxLength={50} required /></label></div></fieldset>
+            <fieldset disabled={sending}><legend>ゲスト区分 <span className="optional">任意</span></legend><div className="guest-side-options"><label><input type="radio" name="guestSide" value="groom" />新郎ゲスト</label><label><input type="radio" name="guestSide" value="bride" />新婦ゲスト</label></div></fieldset>
+            <label className="form-field">郵便番号 <span className="optional">任意</span><input name="postalCode" autoComplete="postal-code" inputMode="numeric" placeholder="1234567" maxLength={8} pattern="[0-9]{3}-?[0-9]{4}" title="半角数字7桁（ハイフン可）で入力してください" disabled={sending} /></label>
+            <label className="form-field">ご住所 <span className="optional">任意</span><input name="address" autoComplete="address-line1" placeholder="東京都〇〇区〇〇 1-1-1" maxLength={200} disabled={sending} /></label>
+            <label className="form-field">建物名・部屋番号 <span className="optional">任意</span><input name="building" autoComplete="address-line2" placeholder="〇〇マンション 101号室" maxLength={200} disabled={sending} /></label>
             <label className="form-field">メールアドレス <span className="optional">任意</span><input name="email" type="email" autoComplete="email" placeholder="hanako@example.com" maxLength={254} disabled={sending} /><small>ご入力いただいた方に、回答のコピーをメールでお送りします。</small></label>
             {attendance === 'attending' && <label className="form-field">アレルギー・お食事について <span className="optional">任意</span><input name="allergies" placeholder="お持ちのアレルギーなどがあればお知らせください" maxLength={500} disabled={sending} /></label>}
             <label className="form-field">おふたりへのメッセージ <span className="optional">任意</span><textarea name="message" rows={3} placeholder="お祝いのメッセージなど ご自由にお書きください" maxLength={1000} disabled={sending} /></label>

@@ -22,6 +22,19 @@ beforeEach(() => {
 });
 
 describe('出欠受付', () => {
+  it('ゲスト区分と住所を保存し、不正な区分・郵便番号を拒否する', async () => {
+    const additions = { guestSide: 'bride', postalCode: '123-4567', address: '東京都〇〇区 1-1-1', building: 'テストマンション101' };
+    send.mockResolvedValue({});
+    expect((await invoke({ ...valid, ...additions })).statusCode).toBe(201);
+    expect(send.mock.calls[1][0].input.TransactItems[1].Put.Item).toMatchObject(additions);
+    expect(responseSchema.safeParse({ ...valid, postalCode: '1234567' }).success).toBe(true);
+    expect(responseSchema.safeParse({ ...valid, postalCode: '' }).success).toBe(true);
+    send.mockClear();
+    for (const extra of [{ guestSide: 'unknown' }, { postalCode: '123' }, { postalCode: 'abcdefg' }, { address: 'a'.repeat(201) }]) {
+      expect((await invoke({ ...valid, ...extra })).statusCode).toBe(400);
+    }
+    expect(send).not.toHaveBeenCalled();
+  });
   it('成功・入力エラー・内部エラーでもCORSヘッダーを返す', async () => {
     send.mockResolvedValue({});
     const success = await invoke(valid);

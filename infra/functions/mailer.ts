@@ -18,6 +18,8 @@ export const handler: DynamoDBStreamHandler = async event => {
     const attendance = response.attendance === 'attending' ? 'ご出席' : 'ご欠席';
     const details = [
       `ご出欠：${attendance}`, `お名前：${response.name}`, `ふりがな：${response.kana}`, `メールアドレス：${response.email || '未登録'}`,
+      `ゲスト区分：${response.guestSide === 'groom' ? '新郎ゲスト' : response.guestSide === 'bride' ? '新婦ゲスト' : '未選択'}`,
+      `郵便番号：${response.postalCode || '未登録'}`, `ご住所：${response.address || '未登録'}`, `建物名・部屋番号：${response.building || '未登録'}`,
       ...(response.attendance === 'attending' ? [`アレルギー・お食事：${response.allergies || 'なし'}`] : []),
       `メッセージ：${response.message || 'なし'}`, '',
       `会場：${wedding.venueJapanese}`, `住所：${wedding.address}`,

@@ -42,6 +42,18 @@ it('送信済みなら再送しない', async () => {
   await run();
   expect(sesSend).not.toHaveBeenCalled();
 });
+it('追加したゲスト区分と住所を回答者と主催者のメールに含める', async () => {
+  process.env.HOST_EMAIL = 'host@example.com';
+  dbSend.mockResolvedValue({ Item: { ...item, email: 'guest@example.com', guestSide: 'groom', postalCode: '123-4567', address: '東京都〇〇区 1-1-1', building: 'テストマンション101' } });
+  await run();
+  expect(sesSend).toHaveBeenCalledTimes(2);
+  for (const [command] of sesSend.mock.calls) {
+    for (const format of ['Text', 'Html']) {
+      const body = command.input.Content.Simple.Body[format].Data;
+      for (const text of ['新郎ゲスト', '123-4567', '東京都〇〇区 1-1-1', 'テストマンション101']) expect(body).toContain(text);
+    }
+  }
+});
 it('HTML内の入力値をエスケープし、改行を保ち、主催者にもHTMLを送る', async () => {
   process.env.HOST_EMAIL = 'host@example.com';
   dbSend.mockResolvedValue({ Item: { ...item, email: 'guest@example.com', name: '<img src=x onerror=alert(1)>', message: 'A & B\n<script>alert(1)</script>' } });
