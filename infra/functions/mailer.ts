@@ -4,6 +4,7 @@ import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from '@aws-sdk/lib-
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { weddingSchema } from '../../shared/wedding';
 import { renderEmail } from './email-template';
+import type { Companion } from '../../shared/validation';
 
 const db = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const ses = new SESv2Client({});
@@ -21,6 +22,11 @@ export const handler: DynamoDBStreamHandler = async event => {
       `ゲスト区分：${response.guestSide === 'groom' ? '新郎ゲスト' : response.guestSide === 'bride' ? '新婦ゲスト' : '未選択'}`,
       `郵便番号：${response.postalCode || '未登録'}`, `ご住所：${response.address || '未登録'}`, `建物名・部屋番号：${response.building || '未登録'}`,
       ...(response.attendance === 'attending' ? [`アレルギー・お食事：${response.allergies || 'なし'}`] : []),
+      ...((response.companions || []) as Companion[]).flatMap((guest, index) => [
+        '', `同伴者 ${index + 1}`, `ご出欠：${guest.attendance === 'attending' ? 'ご出席' : 'ご欠席'}`,
+        `お名前：${guest.name}`, `ふりがな：${guest.kana}`,
+        ...(guest.attendance === 'attending' ? [`アレルギー・お食事：${guest.allergies || 'なし'}`] : [])
+      ]),
       `メッセージ：${response.message || 'なし'}`, '',
       `会場：${wedding.venueJapanese}`, `住所：${wedding.address}`,
       ...(wedding.date ? [`挙式日時：${new Intl.DateTimeFormat('ja-JP', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tokyo' }).format(new Date(wedding.date))}`] : ['挙式日時：後日ご案内']),

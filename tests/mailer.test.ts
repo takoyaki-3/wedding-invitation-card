@@ -10,6 +10,22 @@ import { handler } from '../infra/functions/mailer';
 const event = { Records: [{ eventName: 'INSERT', dynamodb: { Keys: { pk: { S: 'RSVP#test' } } } }] } as DynamoDBStreamEvent;
 const item = { name: '山田 花子', kana: 'やまだ はなこ', attendance: 'attending', email: '', allergies: '卵', message: 'おめでとう！', guestMailSent: false };
 const run = () => handler(event, {} as Context, () => {});
+it('同伴者の出欠と食事情報を回答者と主催者のメールに含める', async () => {
+  process.env.HOST_EMAIL = 'host@example.com';
+  dbSend.mockResolvedValue({ Item: { ...item, email: 'guest@example.com', companions: [
+    { name: '山田 太郎', kana: 'やまだ たろう', attendance: 'attending', allergies: '小麦' },
+    { name: '山田 次郎', kana: 'やまだ じろう', attendance: 'declining', allergies: '表示しない' }
+  ] } });
+  await run();
+  expect(sesSend).toHaveBeenCalledTimes(2);
+  for (const [command] of sesSend.mock.calls) {
+    for (const format of ['Text', 'Html']) {
+      const body = command.input.Content.Simple.Body[format].Data;
+      for (const value of ['山田 太郎', 'やまだ たろう', '小麦', '山田 次郎', 'ご欠席']) expect(body).toContain(value);
+      expect(body).not.toContain('表示しない');
+    }
+  }
+});
 beforeEach(() => {
   dbSend.mockReset(); sesSend.mockReset().mockResolvedValue({});
   process.env.WEDDING_CONFIG = JSON.stringify(weddingFromEnv(parseEnv(readFileSync('.env.example', 'utf8'))));

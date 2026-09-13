@@ -22,6 +22,29 @@ beforeEach(() => {
 });
 
 describe('出欠受付', () => {
+  it('複数人の回答をまとめて保存し、欠席者のアレルギーを除外する', async () => {
+    const companions = [
+      { name: '山田 太郎', kana: 'やまだ たろう', attendance: 'attending', allergies: '小麦' },
+      { name: '山田 次郎', kana: 'やまだ じろう', attendance: 'declining', allergies: '卵' }
+    ];
+    send.mockResolvedValue({});
+    expect((await invoke({ ...valid, companions })).statusCode).toBe(201);
+    const item = send.mock.calls[1][0].input.TransactItems[1].Put.Item;
+    expect(item.companions).toEqual([companions[0], { ...companions[1], allergies: '' }]);
+    send.mockReset().mockResolvedValue({ Item: item });
+    expect((await invoke({ ...valid, companions })).statusCode).toBe(200);
+    expect(send).toHaveBeenCalledTimes(1);
+  });
+  it('同伴者の必須項目と人数の上限を検証する', async () => {
+    const guest = { name: '山田 太郎', kana: 'やまだ たろう', attendance: 'attending', allergies: 'あ'.repeat(500) };
+    send.mockResolvedValue({});
+    expect((await invoke({ ...valid, companions: Array(9).fill(guest) })).statusCode).toBe(201);
+    send.mockClear();
+    for (const companions of [[{ ...guest, name: ' ' }], [{ ...guest, kana: '' }], [{ ...guest, attendance: 'unknown' }], Array(10).fill(guest)]) {
+      expect((await invoke({ ...valid, companions })).statusCode).toBe(400);
+    }
+    expect(send).not.toHaveBeenCalled();
+  });
   it('ゲスト区分と住所を保存し、不正な区分・郵便番号を拒否する', async () => {
     const additions = { guestSide: 'bride', postalCode: '123-4567', address: '東京都〇〇区 1-1-1', building: 'テストマンション101' };
     send.mockResolvedValue({});
@@ -105,7 +128,7 @@ describe('出欠受付', () => {
   });
   it('不正JSONと大きすぎるリクエストを拒否する', async () => {
     expect((await invoke(null, { body: '{' })).statusCode).toBe(400);
-    expect((await invoke(null, { body: 'a'.repeat(12001) })).statusCode).toBe(413);
+    expect((await invoke(null, { body: 'a'.repeat(64001) })).statusCode).toBe(413);
     expect(send).not.toHaveBeenCalled();
   });
   it('ストレージ障害を登録成功として扱わない', async () => {

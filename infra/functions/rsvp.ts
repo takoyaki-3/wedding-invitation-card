@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandlerV2 = async event => {
   const contentType = event.headers['content-type'] || '';
   if (!contentType.toLowerCase().startsWith('application/json')) return reply(415, 'JSON形式で送信してください。');
   const body = event.isBase64Encoded ? Buffer.from(event.body || '', 'base64').toString('utf8') : event.body || '';
-  if (Buffer.byteLength(body) > 12000) return reply(413, '入力内容が長すぎます。');
+  if (Buffer.byteLength(body) > 64000) return reply(413, '入力内容が長すぎます。');
   let raw: unknown;
   try { raw = JSON.parse(body); } catch { return reply(400, '入力内容をご確認ください。'); }
   const parsed = responseSchema.safeParse(raw);

@@ -1,0 +1,8 @@
+.companion-fields { margin: 28px 0; }
+.companion-fields h3 { font-size: 16px; }
+.companion-fields > p { font-size: 12px; line-height: 1.9; margin: 12px 0; }
+.companion-fields .companion-card { border: 1px solid #d7ddd4; padding: 18px; margin: 24px 0; min-width: 0; }
+.companion-card legend { padding: 0 6px; }
+.companion-remove { margin-left: auto; margin-bottom: 16px; }
+.companion-card .attendance-options { margin-bottom: 20px; }
+.companion-fields button:disabled { opacity: .5; cursor: not-allowed; }

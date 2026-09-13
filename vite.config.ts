@@ -14,6 +14,13 @@ export default defineConfig(() => ({
   plugins: [react()],
   define: {
     __WEDDING_CONFIG__: JSON.stringify(loadEnvironment().wedding),
-    __COUPLE_PHOTOS__: JSON.stringify(couplePhotos)
+    __COUPLE_PHOTOS__: JSON.stringify(couplePhotos),
+    __PROFILE_PHOTOS__: JSON.stringify(Object.fromEntries(['bride', 'groom'].map(role => {
+      const directory = new URL(`./public/${role}/`, import.meta.url);
+      const photos = existsSync(directory) ? readdirSync(directory, { withFileTypes: true })
+        .filter(file => file.isFile() && /\.(jpe?g|png|webp|avif)$/i.test(file.name))
+        .map(file => file.name).sort().map(name => `/${role}/${encodeURIComponent(name)}`) : [];
+      return [role, photos];
+    })))
   }
 }));

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, CalendarDays, Check, ChevronRight, Clock3, Flower2, Heart, Mail, MapPin, Menu, Phone, Plus, X } from 'lucide-react';
 import { responseSchema } from '../shared/validation';
 import { CoupleSlideshow } from './CoupleSlideshow';
+import { CoupleProfiles } from './CoupleProfiles';
+import { CompanionFields, type CompanionEntry } from './CompanionFields';
 import { RailwayArch, WaterRipples } from './RailWaterMotif';
 import { gatheringFromSearch } from '../shared/invitation';
 import { runtimeConfigSchema, type RuntimeConfig } from '../shared/runtime-config';
@@ -22,6 +24,7 @@ function App() {
   const [configError, setConfigError] = useState(false);
   const [attendance, setAttendance] = useState<'attending' | 'declining'>('attending');
   const [sending, setSending] = useState(false);
+  const [companions, setCompanions] = useState<CompanionEntry[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [token] = useState(() => new URLSearchParams(window.location.hash.slice(1)).get('invite') || '');
@@ -55,10 +58,11 @@ function App() {
     setError('');
     const fields = Object.fromEntries(new FormData(event.currentTarget));
     delete fields.attendanceChoice;
+    for (const key of Object.keys(fields)) if (key.startsWith('companionAttendance-')) delete fields[key];
     fields.name = `${String(fields.lastName || '').trim()} ${String(fields.firstName || '').trim()}`.trim();
     fields.kana = `${String(fields.lastKana || '').trim()} ${String(fields.firstKana || '').trim()}`.trim();
     for (const key of ['lastName', 'firstName', 'lastKana', 'firstKana']) delete fields[key];
-    const parsed = responseSchema.safeParse({ ...fields, attendance, allergies: attendance === 'attending' ? fields.allergies || '' : '', token: runtime.demo ? 'd'.repeat(43) : token });
+    const parsed = responseSchema.safeParse({ ...fields, attendance, ...(companions.length ? { companions: companions.map(({ id: _id, ...guest }) => guest) } : {}), allergies: attendance === 'attending' ? fields.allergies || '' : '', token: runtime.demo ? 'd'.repeat(43) : token });
     if (!parsed.success) { setError(parsed.error.issues[0]?.message || '入力内容をご確認ください'); return; }
     setSending(true);
     try {
@@ -74,7 +78,7 @@ function App() {
     finally { setSending(false); }
   }
 
-  const links = [['#message', 'ごあいさつ'], ['#details', '当日のご案内'], ['#access', 'アクセス']];
+  const links = [['#message', 'ごあいさつ'], ['#profiles', 'プロフィール'], ['#details', '当日のご案内'], ['#access', 'アクセス']];
 
   return <>
     <header className="site-header">
@@ -125,6 +129,7 @@ function App() {
       </section>
 
       <CoupleSlideshow />
+      <CoupleProfiles />
 
       <section id="details" className="details-section section-anchor">
         <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
@@ -134,13 +139,13 @@ function App() {
           <p>尚 クロークは3階 着替室は4階にございます</p>
         </div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13:00', text: '披露宴前に3階にて受付を行います。' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください。' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13:00', text: '披露宴前に3階にて受付を行います。' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください。' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 
       <section id="access" className="access-section section-anchor">
         <div className="venue-photo"><iframe src={mapEmbedUrl} title={`${wedding.venueJapanese}へのアクセスマップ`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div>
-        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Phone size={17} /><p>03-3980-1111</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div>
+        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Phone size={17} /><p>03-3980-1111</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div><a className="outline-button" href="https://ikebukuro.metropolitan.jp/feature/access_from_station.html" target="_blank" rel="noreferrer">会場へのアクセスガイド <ArrowRight size={15} /></a></div>
       </section>
 
       <section id="rsvp" className="rsvp-section section-anchor">
@@ -160,6 +165,7 @@ function App() {
             <label className="form-field">建物名・部屋番号 <span className="optional">任意</span><input name="building" autoComplete="address-line2" placeholder="〇〇マンション 101号室" maxLength={200} disabled={sending} /></label>
             <label className="form-field">メールアドレス <span className="optional">任意</span><input name="email" type="email" autoComplete="email" placeholder="hanako@example.com" maxLength={254} disabled={sending} /><small>ご入力いただいた方に、回答のコピーをメールでお送りします。</small></label>
             {attendance === 'attending' && <label className="form-field">アレルギー・お食事について <span className="optional">任意</span><input name="allergies" placeholder="お持ちのアレルギーなどがあればお知らせください" maxLength={500} disabled={sending} /></label>}
+            <CompanionFields guests={companions} onChange={setCompanions} disabled={sending || deadlinePassed} />
             <label className="form-field">ふたりへのメッセージ <span className="optional">任意</span><textarea name="message" rows={3} placeholder="お祝いのメッセージなど ご自由にお書きください" maxLength={1000} disabled={sending} /></label>
             <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
             {error && <p className="form-error" role="alert">{error}</p>}

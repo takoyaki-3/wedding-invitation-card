@@ -100,7 +100,7 @@ CDKは作成したCloudFrontのドメインから回答送信URLを生成し、S
 
 SES IDを指定しなければ送信元のメールアドレスIDを作成するので、届いた確認メールで認証を完了してください。既存のドメイン・IDを使う場合は環境変数に設定します。既存IDに既定の設定セットがある場合は `SES_CONFIGURATION_SET_NAME` も設定してください。CDKは指定されたIDと設定セットに限定して送信を許可します。
 
-ゲストの任意アドレスへ送るには、利用リージョンで[SESの本番アクセス](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html)が必要です。[SESのID認証](https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html)も確認してください。SESは受信メールボックスを作成しないため、問い合わせ先の受信設定は既存のメールサービス側で行います。。
+ゲストの任意アドレスへ送るには、利用リージョンで[SESの本番アクセス](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html)が必要です。[SESのID認証](https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html)も確認してください。SESは受信メールボックスを作成しないため、問い合わせ先の受信設定は既存のメールサービス側で行います。
 
 従来のCDKコンテキスト `senderEmail`、`hostEmail`、`sesIdentityDomain`、`sesIdentityArn`、`sesConfigurationSetName` による上書きも可能ですが、実際の値を `cdk.json` に書き込まず、環境変数ファイルで管理してください。
 
