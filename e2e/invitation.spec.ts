@@ -101,6 +101,33 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   expect(payload).not.toHaveProperty('group');
 });
 
+test('独自ドメインでCSPを維持したまま同じドメインへ回答する', async ({ page, baseURL }) => {
+  const origin = 'https://wedding-invitation-card.app.takoyaki3.com';
+  const token = 'c'.repeat(43);
+  let payload: Record<string, unknown> | undefined;
+  await page.route(`${origin}/**`, async route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/config.json') {
+      await route.fulfill({ json: { demo: false, rsvpEndpoint: '/api/rsvp' } });
+    } else if (url.pathname === '/api/rsvp') {
+      expect(route.request().method()).toBe('POST');
+      payload = route.request().postDataJSON();
+      await route.fulfill({ status: 201, json: { message: '回答を受け付けました' } });
+    } else {
+      const response = await route.fetch({ url: new URL(url.pathname + url.search, baseURL).href });
+      await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': "connect-src 'self'" } });
+    }
+  });
+  await page.goto(`${origin}/?group=friend#invite=${token}`);
+  await page.getByLabel('姓', { exact: true }).fill('山田');
+  await page.getByLabel('名', { exact: true }).fill('花子');
+  await page.getByLabel('せい', { exact: true }).fill('やまだ');
+  await page.getByLabel('めい', { exact: true }).fill('はなこ');
+  await page.getByRole('button', { name: 'この内容で回答する' }).click();
+  await expect(page.getByRole('heading', { name: 'ご回答ありがとうございます' })).toBeVisible();
+  expect(payload).toMatchObject({ token, name: '山田 花子', email: '' });
+});
+
 test('クエリの区分に応じて集合案内を表示する', async ({ page }) => {
   for (const query of ['', '?group=friend', '?group=unknown', '?group=family']) {
     await page.goto(`/${query}`);

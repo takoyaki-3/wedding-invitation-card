@@ -114,7 +114,8 @@ export class WeddingStack extends Stack {
     const rsvpEndpoint = `https://${distribution.distributionDomainName}/api/rsvp`;
     new deployment.BucketDeployment(this, 'PublishWebsite', {
       destinationBucket: bucket,
-      sources: [deployment.Source.asset(path.join(root, 'dist')), deployment.Source.jsonData('config.json', { demo: false, rsvpEndpoint })],
+      // Keep browser requests on the current origin, including custom domains.
+      sources: [deployment.Source.asset(path.join(root, 'dist')), deployment.Source.jsonData('config.json', { demo: false, rsvpEndpoint: '/api/rsvp' })],
       distribution,
       retainOnDelete: true,
       distributionPaths: ['/*']

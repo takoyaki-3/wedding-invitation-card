@@ -24,8 +24,8 @@ async function createInvite() {
 try {
   const config = runtimeConfigSchema.parse(await fetch(`${outputs.WebsiteUrl}/config.json`, { cache: 'no-store' }).then(res => res.json()));
   assert.equal(config.demo, false);
-  assert.equal(config.rsvpEndpoint, outputs.RsvpEndpoint);
-  rsvpEndpoint = config.rsvpEndpoint;
+  rsvpEndpoint = new URL(config.rsvpEndpoint, outputs.WebsiteUrl).href;
+  assert.equal(rsvpEndpoint, outputs.RsvpEndpoint);
   console.log('PASS: production runtime configuration');
   const first = await createInvite();
   assert.equal((await post({ ...input, token: first.token })).status, 201);

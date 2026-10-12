@@ -85,16 +85,16 @@ npm run deploy
 
 ### APIエンドポイントの自動設定
 
-CDKは作成したCloudFrontのドメインから回答送信URLを生成し、S3の `config.json` に配置します。`public/config.json` はローカル用のデモ設定で、本番デプロイ時には次の形式に自動的に置き換わります。URLの手入力やフロントエンドへのAPI URLの埋め込みは不要です。
+CDKは回答送信先を同一オリジンの `/api/rsvp` に設定し、S3の `config.json` に配置します。`public/config.json` はローカル用のデモ設定で、本番デプロイ時には次の形式に自動的に置き換わります。URLの手入力やフロントエンドへのAPI URLの埋め込みは不要です。
 
 ```json
 {
   "demo": false,
-  "rsvpEndpoint": "https://YOUR_DISTRIBUTION.cloudfront.net/api/rsvp"
+  "rsvpEndpoint": "/api/rsvp"
 }
 ```
 
-画面は起動時に `/config.json` を読み込み、`rsvpEndpoint` へ回答を送信します。CloudFrontの `/api/*` がCDKで作成されたAPI Gatewayに接続されるため、ブラウザからは同一オリジンのAPIとして利用できます。設定ファイルはCloudFrontでもキャッシュを無効にし、ブラウザは `no-store` で取得します。設定を取得・検証できない場合は送信を無効にします。
+画面は起動時に `/config.json` を読み込み、`rsvpEndpoint` へ回答を送信します。CloudFrontの `/api/*` がCDKで作成されたAPI Gatewayに接続されるため、ブラウザからは同一オリジンのAPIとして利用できます。独自ドメイン `https://wedding-invitation-card.app.takoyaki3.com/` から開いた場合も、そのドメインの `/api/rsvp` に送信するため、CSPの `connect-src 'self'` による `Failed to fetch` を防ぎます。独自ドメイン側でも `/api/*` を同じCloudFrontへ転送してください。設定ファイルはCloudFrontでもキャッシュを無効にし、ブラウザは `no-store` で取得します。設定を取得・検証できない場合は送信を無効にします。
 
 生成されたURLは `RsvpEndpoint` 出力でも確認できます。`config.json` はブラウザから参照される公開設定なので、認証情報や招待トークンは記載しません。公開サイトへの変更反映には `npm run deploy` を実行してください。
 
