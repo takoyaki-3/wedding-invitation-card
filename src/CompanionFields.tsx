@@ -14,7 +14,7 @@ export function CompanionFields({ guests, onChange, disabled }: {
   }
   return <section className="companion-fields" aria-labelledby="companions-title">
     <h3 id="companions-title">ご家族・同伴者のご回答</h3>
-    <p>代表者を含め10名まで、まとめてご回答いただけます。連絡先とメッセージは共通です。</p>
+    <p>代表者を含め10名まで まとめてご回答いただけます 連絡先とメッセージは共通です</p>
     {guests.map((guest, index) => <fieldset key={guest.id} disabled={disabled} className="companion-card">
       <legend>同伴者 {index + 1}</legend>
       <button type="button" className="text-button companion-remove" aria-label={`同伴者 ${index + 1} を削除`} onClick={() => onChange(guests.filter(item => item.id !== guest.id))}><X size={14} />削除</button>

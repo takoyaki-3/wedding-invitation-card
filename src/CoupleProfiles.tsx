@@ -20,35 +20,35 @@ const wedding = __WEDDING_CONFIG__;
 const groomDetails = [
   { title: '基本情報', rows: [['年齢', '27歳'], ['血液型', 'A型'], ['出身地', '日本・神奈川']] },
   { title: '学歴・職種・外見', rows: [['学歴', '大学卒'], ['学校名', '調布にある国立大学'], ['職種', 'IT関連'], ['身長', '172cm']] },
-  { title: '性格・趣味・生活', rows: [['性格・タイプ', '知的、好奇心旺盛、面白い、真面目'], ['お酒', 'ときどき飲む']] },
+  { title: '性格・趣味・生活', rows: [['性格・タイプ', '知的 好奇心旺盛 面白い 真面目'], ['お酒', 'ときどき飲む']] },
 ];
 const brideDetails = [
   { title: '基本情報', rows: [['年齢', '27歳'], ['血液型', 'A型'], ['出身地', '東京']] },
   { title: '学歴・職種・外見', rows: [['職種', '会社員'], ['身長', '155cm']] },
-  { title: '性格・趣味・生活', rows: [['性格・タイプ', '真面目、誠実、マイペース'], ['好きなこと・趣味', '旅行、自然、ゲーム・漫画']] },
+  { title: '性格・趣味・生活', rows: [['性格・タイプ', '真面目 誠実 マイペース'], ['好きなこと・趣味', '旅行 自然 ゲーム・漫画']] },
 ];
 const profiles = [
   {
     id: 'groom', role: '新郎', name: wedding.groomJapanese, englishName: wedding.groom, occupation: '鉄道関係の仕事', online: true,
     interest: '鉄道', interestLabel: '仕事',
     introduction: [
-      'たこやきです。目に留めてくださりありがとうございますm(_ _)m\n同期がチラホラ結婚し始めて、結婚したいなら行動しないとな…と始めました。',
-      '・仕事\n鉄道会社のIT部門で働いています。仕事以外でも、趣味で友人とアプリ作ってコンテストに応募するのが好きです！ITで交通を良くしたいです。',
-      '・休日\n土日休みです。平日も夜なら比較的あいてます。',
-      '・休日の過ごし方\n鉄道で自然や温泉のある所へ旅行したり、パソコンで何か作ったりしてます。',
-      '・性格\n夏休みに韓国のソウルから飛行機・新幹線に乗らずに東京まで帰るなど、おたく気質です。同期の着せ替え人形になるなどの変わったイベントも好きです！',
-      '・マイブーム\n実験道具でプリン作ったり、バニラアイスや白玉作ったりと、カンタンなお菓子作りにハマってます！ただ、いつまで続くかな…',
-      '結婚式で皆さまにお会いできることを楽しみにしています。\nどうぞよろしくお願いします。',
+      'たこやきです 目に留めてくださりありがとうございますm(_ _)m\n同期がチラホラ結婚し始めて 結婚したいなら行動しないとな…と始めました',
+      '・仕事\n鉄道会社のIT部門で働いています 仕事以外でも 趣味で友人とアプリ作ってコンテストに応募するのが好きです！ITで交通を良くしたいです',
+      '・休日\n土日休みです 平日も夜なら比較的あいてます',
+      '・休日の過ごし方\n鉄道で自然や温泉のある所へ旅行したり パソコンで何か作ったりしてます',
+      '・性格\n夏休みに韓国のソウルから飛行機・新幹線に乗らずに東京まで帰るなど おたく気質です 同期の着せ替え人形になるなどの変わったイベントも好きです！',
+      '・マイブーム\n実験道具でプリン作ったり バニラアイスや白玉作ったりと カンタンなお菓子作りにハマってます！ただ いつまで続くかな…',
+      '結婚式で皆さまにお会いできることを楽しみにしています\nどうぞよろしくお願いします',
     ],
   },
   {
     id: 'bride', role: '新婦', name: wedding.brideJapanese, englishName: wedding.bride, occupation: '生物系の研究開発（水関係）', online: false,
     interest: '旅行好き', interestLabel: '旅行',
     introduction: [
-      'はじめまして。\nプロフィールをご覧いただきありがとうございます。',
-      '・仕事\n生物系の研究開発に携わっています。土日休みで、土日は出かけるか、ゴロゴロしているかの両極端です。2日のうち1日は休んでいることが多いです。',
-      '・趣味\n漫画：通勤時間の楽しみです！\nアニメ：原画集や背景画集など見るのが好きです。\nゲーム：最近モンハンをプレイしています。モンスターを狩っているのか、モンスターに狩られているのか怪しいです…\n資格：気が向いたら…一緒に取り組めたら嬉しいです！\n旅行：47都道府県制覇\n寺社仏閣⛩やお城🏯、景色がいいところなどいくことが多いです。',
-      '結婚式で皆さまにお会いできることを楽しみにしています。\nどうぞよろしくお願いします。',
+      'はじめまして\nプロフィールをご覧いただきありがとうございます',
+      '・仕事\n生物系の研究開発に携わっています 土日休みで 土日は出かけるか ゴロゴロしているかの両極端です 2日のうち1日は休んでいることが多いです',
+      '・趣味\n漫画：通勤時間の楽しみです！\nアニメ：原画集や背景画集など見るのが好きです\nゲーム：最近モンハンをプレイしています モンスターを狩っているのか モンスターに狩られているのか怪しいです…\n資格：気が向いたら…一緒に取り組めたら嬉しいです！\n旅行：47都道府県制覇\n寺社仏閣⛩やお城🏯 景色がいいところなどいくことが多いです',
+      '結婚式で皆さまにお会いできることを楽しみにしています\nどうぞよろしくお願いします',
     ],
   },
 ];
@@ -68,7 +68,7 @@ export function CoupleProfiles() {
   const photos = __PROFILE_PHOTOS__[selected] || [];
   const photoIndex = (photoIndices[selected] || 0) % (photos.length || 1);
   const photo = photos[photoIndex];
-  const comment = photo ? comments[decodeURIComponent(photo.split('/').pop()!)] || '思い出の一枚。' : '';
+  const comment = photo ? comments[decodeURIComponent(photo.split('/').pop()!)] || '思い出の一枚' : '';
   function nextPhoto() {
     if (photos.length < 2) return;
     setPhotoIndices(current => ({ ...current, [selected]: (photoIndex + 1) % photos.length }));
@@ -80,7 +80,7 @@ export function CoupleProfiles() {
     const timer = window.setTimeout(() => {
       const nextProfile = profiles.find(item => item.id !== selected)!;
       setSelected(nextProfile.id);
-      setAnnouncement(`${nextProfile.role}のプロフィールを表示しています。`);
+      setAnnouncement(`${nextProfile.role}のプロフィールを表示しています`);
       setLiking(false);
       likeLock.current = false;
     }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 950);
@@ -92,13 +92,13 @@ export function CoupleProfiles() {
     if (like) {
       likeLock.current = true;
       setLiked(current => current.includes(selected) ? current : [...current, selected]);
-      setAnnouncement(`${profile.role}にいいねしました。`);
+      setAnnouncement(`${profile.role}にいいねしました`);
       setDrag(0);
       setLiking(true);
       return;
     }
     const nextProfile = profiles.find(item => item.id !== selected)!;
-    setAnnouncement(`${like ? `${profile.role}にいいねしました。` : ''}${nextProfile.role}のプロフィールを表示しています。`);
+    setAnnouncement(`${like ? `${profile.role}にいいねしました` : ''}${nextProfile.role}のプロフィールを表示しています`);
     setSelected(nextProfile.id);
     setDrag(0);
   }
@@ -117,7 +117,7 @@ export function CoupleProfiles() {
   return <section id="profiles" className="couple-profiles section-anchor" aria-labelledby="profiles-title">
     <div className="profiles-heading">
       <div className="section-kicker">MEET THE TWO OF US</div>
-      <h2 id="profiles-title">Our profiles.</h2>
+      <h2 id="profiles-title">Our profiles</h2>
       <p className="section-subtitle">ふたりのプロフィール</p>
     </div>
     <details className="profiles-disclosure">
@@ -127,7 +127,7 @@ export function CoupleProfiles() {
         <ChevronDown size={18} aria-hidden="true" />
       </summary>
     <div className="profiles-switch" aria-label="プロフィールの切り替え">
-      {profiles.map(item => <button key={item.id} type="button" disabled={liking} aria-pressed={selected === item.id} onClick={() => { setSelected(item.id); setAnnouncement(`${item.role}のプロフィールを表示しています。`); }}>
+      {profiles.map(item => <button key={item.id} type="button" disabled={liking} aria-pressed={selected === item.id} onClick={() => { setSelected(item.id); setAnnouncement(`${item.role}のプロフィールを表示しています`); }}>
         <span>{item.role}</span>{item.englishName}
       </button>)}
     </div>

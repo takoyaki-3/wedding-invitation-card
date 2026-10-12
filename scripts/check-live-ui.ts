@@ -14,8 +14,8 @@ try {
     const response = await page.goto(outputs.WebsiteUrl, { waitUntil: 'networkidle' });
     assert.equal(response?.status(), 200);
     assert.ok(response?.headers()['content-security-policy']);
-    await page.getByRole('heading', { name: 'Together, a beautiful beginning.' }).waitFor();
-    await page.getByText('ご回答には、お送りした専用の招待リンクからアクセスしてください。').waitFor();
+    await page.getByRole('heading', { name: 'Together a beautiful beginning' }).waitFor();
+    await page.getByText('ご回答には お送りした専用の招待リンクからアクセスしてください').waitFor();
     assert.equal(await page.getByRole('button', { name: 'この内容で回答する' }).isDisabled(), true);
     await page.locator('.venue-photo').scrollIntoViewIfNeeded();
     await page.waitForFunction(() => Array.from(document.images).every(img => img.complete && img.naturalWidth > 0));

@@ -11,7 +11,7 @@ test('ツーショットの表示、前後移動と自動再生の停止', async
   test.skip(photoCount < 2, 'ローカルの写真を2枚以上配置した環境で実行');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  const gallery = page.getByRole('region', { name: 'The two of us.' });
+  const gallery = page.getByRole('region', { name: 'The two of us' });
   await gallery.scrollIntoViewIfNeeded();
   const photo = gallery.locator('img');
   await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
@@ -42,13 +42,13 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
   const github = page.getByRole('link', { name: 'GitHubでソースコードを見る（新しいタブ）' });
   await expect(github).toBeVisible();
   await expect(github).toHaveAttribute('href', 'https://github.com/takoyaki-3/wedding-invitation-card');
-  await expect(page.getByRole('heading', { name: 'Together, a beautiful beginning.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Together a beautiful beginning' })).toBeVisible();
   await expect(page.getByText(wedding.groomJapanese, { exact: false }).first()).toBeVisible();
   await expect(page.getByText(wedding.venueJapanese, { exact: true })).toBeVisible();
   await expect(page.getByText('プレビュー版：', { exact: false })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.locator('.venue-photo').scrollIntoViewIfNeeded();
-  await expect.poll(() => page.locator('.venue-photo img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  await expect(page.getByTitle(`${wedding.venueJapanese}へのアクセスマップ`)).toBeVisible();
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: `test-results/${testInfo.project.name}-invitation.png`, fullPage: true });
   await page.getByLabel('姓', { exact: true }).fill('山田');
@@ -68,7 +68,7 @@ test('招待状の表示、任意メールなしの出席、欠席フォーム',
   await page.getByLabel('メールアドレス', { exact: false }).fill('guest@example.com');
   await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByRole('button', { name: '回答をプレビューする' }).click();
-  await expect(page.getByText('あたたかなお気持ちをありがとうございます。', { exact: false })).toBeVisible();
+  await expect(page.getByText('あたたかなお気持ちをありがとうございます', { exact: false })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -78,7 +78,7 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   let payload: Record<string, unknown> | undefined;
   await page.route(endpoint, async route => {
     payload = route.request().postDataJSON();
-    await route.fulfill({ status: 201, json: { message: '回答を受け付けました。' } });
+    await route.fulfill({ status: 201, json: { message: '回答を受け付けました' } });
   });
   await page.goto(`/?group=family#invite=${token}`);
   await expect(page).toHaveURL('http://127.0.0.1:5173/?group=family');

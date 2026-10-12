@@ -45,7 +45,7 @@ export function CoupleSlideshow() {
       if (!(event.target as HTMLElement).closest('.photo-playback')) setPaused(true);
     }}>
     <div className="section-kicker">OUR MOMENTS</div>
-    <h2 id="photos-title">The two of us.</h2>
+    <h2 id="photos-title">The two of us</h2>
     <p className="section-subtitle">ふたりの思い出</p>
     <div className="couple-photo-frame" aria-live={paused ? 'polite' : 'off'}>
       <img key={photos[index]} src={photos[index]} alt={`ふたりのツーショット写真 ${index + 1}`} loading="lazy" decoding="async" />

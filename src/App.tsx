@@ -70,11 +70,11 @@ function App() {
         const res = await fetch(runtime.rsvpEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed.data), signal: AbortSignal.timeout(15000) });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || '送信できませんでした。しばらくしてから再度お試しください。');
+          throw new Error(body.message || '送信できませんでした しばらくしてから再度お試しください');
         }
       }
       setSubmitted(true);
-    } catch (err) { setError(err instanceof Error && err.name === 'TimeoutError' ? '通信がタイムアウトしました。同じ内容でもう一度送信してください。' : err instanceof Error ? err.message : '通信に失敗しました。もう一度お試しください。'); }
+    } catch (err) { setError(err instanceof Error && err.name === 'TimeoutError' ? '通信がタイムアウトしました 同じ内容でもう一度送信してください' : err instanceof Error ? err.message : '通信に失敗しました もう一度お試しください'); }
     finally { setSending(false); }
   }
 
@@ -95,17 +95,17 @@ function App() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <div className="eyebrow"><span /> WE ARE GETTING MARRIED</div>
-          <h1 id="hero-title">Together,<br /><em>a beautiful</em><br />beginning.</h1>
-          <p className="hero-japanese">大切なあなたと、はじまりの一日を。</p>
+          <h1 id="hero-title">Together<br /><em>a beautiful</em><br />beginning</h1>
+          <p className="hero-japanese">たいせつなあなたと はじまりの一日を</p>
           <div className="couple-names">{wedding.groom} <span>&</span> {wedding.bride}</div>
-          <div className="hero-date"><span>{date ? `${part('year')}.${part('month')}.${part('day')}` : 'Date to be announced'}</span><span className="day-label">{date ? weekday.toUpperCase() : 'OUR WEDDING'}</span></div>
+          <div className="hero-date"><span>{date ? `${part('year')} / ${part('month')} / ${part('day')}` : 'Date to be announced'}</span><span className="day-label">{date ? weekday.toUpperCase() : 'OUR WEDDING'}</span></div>
           <a className="primary-button hero-button" href="#rsvp">出欠のご回答 <ArrowRight size={16} /></a>
           <p className="deadline-small">お返事は {jpDate(wedding.deadline)} まで</p>
           <a className="outline-button invitation-download" href={`/invitation/${new URLSearchParams(window.location.search).get('group') === 'family' ? 'family' : 'friend'}.pdf`} download="結婚式の招待状.pdf">紙の招待状をダウンロード（PDF）<ArrowDown size={15} aria-hidden="true" /></a>
         </div>
         <div className="hero-art">
           <RailwayArch />
-          <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER, WITH YOU.</div></div>
+          <div className="photo-arch"><img src="/wedding-table.jpg" alt="緑と白い花に囲まれたガーデンウェディングのテーブル" fetchPriority="high" /><div className="photo-caption">A DAY TO REMEMBER WITH YOU</div></div>
           <img className="wedding-seal wedding-seal-logo" src="/logo-monochrome.svg" alt="Y & S" />
           <WaterRipples className="hero-ripples" />
           <span className="side-note">OUR NEXT CHAPTER STARTS HERE</span>
@@ -113,11 +113,11 @@ function App() {
         <a className="scroll-note" href="#message">SCROLL TO DISCOVER <ArrowDown size={13} /></a>
       </section>
 
-      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><span>{date ? `${weekday.toUpperCase()}, ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
+      <div className="date-ribbon"><span>THE WEDDING OF {wedding.groom.toUpperCase()} & {wedding.bride.toUpperCase()}</span><span>{date ? `${weekday.toUpperCase()} ${new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Tokyo' }).format(date).replaceAll(',', '').toUpperCase()}` : wedding.venue.toUpperCase()}</span></div>
 
       <section id="message" className="message-section section-anchor">
         <div className="section-kicker">01 — MESSAGE</div>
-        <h2>With all our hearts.</h2><p className="section-subtitle">大切な皆さまへ</p>
+        <h2>With all our hearts</h2><p className="section-subtitle">たいせつな皆さまへ</p>
         <div className="message-body">
           <p>皆様にはおすこやかにお過ごしのことと<br />お慶び申し上げます</p>
           <p>このたび　私たちは<br />結婚式を挙げることになりました</p>
@@ -132,30 +132,30 @@ function App() {
       <CoupleProfiles />
 
       <section id="details" className="details-section section-anchor">
-        <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love.</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
+        <div className="section-heading"><div><div className="section-kicker">02 — WEDDING DAY</div><h2>A day full of love</h2><p className="section-subtitle">当日のご案内</p></div>{date && wedding.endDate && <button className="text-button" onClick={addToCalendar}><Plus size={15} /> カレンダーに追加</button>}</div>
         <div className="event-date"><CalendarDays size={19} strokeWidth={1.4} /><span>{jpDate(wedding.date)}{date && <small>（{new Intl.DateTimeFormat('ja-JP', { weekday: 'short', timeZone: 'Asia/Tokyo' }).format(date)}）</small>}</span></div>
         <div className="ceremony-invitation">
-          <p>誠に恐縮でございますが 挙式にもご参列賜りたく<br />当日は {gathering.time} までに<br />{wedding.venueJapanese} {gathering.place} に<br />お越しくださいますようお願い申し上げます</p>
+          <p>誠に恐縮でございますが 挙式にもご列席賜りたく<br />当日は {gathering.time} までに<br />{wedding.venueJapanese} {gathering.place} に<br />お越しくださいますようお願い申し上げます</p>
           <p>尚 クロークは3階 着替室は4階にございます</p>
         </div>
         <div className="schedule-grid">
-          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください。なお、受付は挙式後・披露宴前に行います。` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います。' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13:00', text: '披露宴前に3階にて受付を行います。' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて、お食事と会話をゆっくりお楽しみください。' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
+          {[{ icon: <Mail />, en: 'Welcome', ja: '集合', time: gathering.time, text: `${gathering.place}にお集まりください なお 受付は挙式後・披露宴前に行います` }, { icon: <Heart />, en: 'Ceremony', ja: '挙式', time: wedding.ceremonyTime, text: '5階ガーデンチャペルで行います' }, { icon: <Check />, en: 'Check-in', ja: '受付', time: '13:00', text: '披露宴前に3階にて受付を行います' }, { icon: <Flower2 />, en: 'Reception', ja: '披露宴', time: wedding.partyTime, text: '25階ポラリス にて お食事と会話をゆっくりお楽しみください' }].map((item, i) => <article className="schedule-card" key={item.en}><span className="schedule-number">0{i + 1}</span><div className="schedule-icon">{item.icon}</div><h3>{item.en}</h3><span className="schedule-ja">{item.ja}</span><div className={`schedule-time ${item.time.includes(':') ? '' : 'time-pending'}`}>{item.time}</div><p>{item.text}</p></article>)}
         </div>
       </section>
 
       <section id="access" className="access-section section-anchor">
         <div className="venue-photo"><iframe src={mapEmbedUrl} title={`${wedding.venueJapanese}へのアクセスマップ`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div>
-        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here.</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Phone size={17} /><p>03-3980-1111</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div><a className="outline-button" href="https://ikebukuro.metropolitan.jp/feature/access_from_station.html" target="_blank" rel="noreferrer">会場へのアクセスガイド <ArrowRight size={15} /></a></div>
+        <div className="venue-copy"><div className="section-kicker">03 — LOCATION</div><h2>See you here</h2><p className="section-subtitle">会場へのアクセス</p><h3>{wedding.venue}</h3><p className="venue-japanese">{wedding.venueJapanese}</p><div className="address-row"><MapPin size={18} /><p>{wedding.address}</p></div><div className="address-row"><Phone size={17} /><p>03-3980-1111</p></div><div className="address-row"><Clock3 size={17} /><p>{wedding.access}</p></div><div><a className="outline-button" href={mapUrl} target="_blank" rel="noreferrer">Google マップで見る <ArrowRight size={15} /></a></div><a className="outline-button" href="https://ikebukuro.metropolitan.jp/feature/access_from_station.html" target="_blank" rel="noreferrer">会場へのアクセスガイド <ArrowRight size={15} /></a></div>
       </section>
 
       <section id="rsvp" className="rsvp-section section-anchor">
-        <div className="rsvp-intro"><div className="section-kicker">04 — RSVP</div><h2>Will you join us?</h2><p className="section-subtitle">出欠のご回答</p><p className="rsvp-description">お会いできる日を 心より楽しみにしています。<br />下記のフォームよりご回答をお願いいたします。</p><div className="reply-by"><CalendarDays size={18} strokeWidth={1.3} /><div><span>PLEASE REPLY BY</span><p>{jpDate(wedding.deadline)}</p></div></div><WaterRipples className="rsvp-ripples" /></div>
+        <div className="rsvp-intro"><div className="section-kicker">04 — RSVP</div><h2>Will you join us?</h2><p className="section-subtitle">出欠のご回答</p><p className="rsvp-description">お会いできる日を 心より楽しみにしています<br />下記のフォームよりご回答をお願いいたします</p><div className="reply-by"><CalendarDays size={18} strokeWidth={1.3} /><div><span>PLEASE REPLY BY</span><p>{jpDate(wedding.deadline)}</p></div></div><WaterRipples className="rsvp-ripples" /></div>
         <div className="rsvp-panel">
-          {submitted ? <div className="success-state" ref={resultRef} tabIndex={-1}><div className="success-icon"><Check size={30} strokeWidth={1.2} /></div><span className="section-kicker">THANK YOU</span><h3>{runtime?.demo ? 'ご回答のプレビューが完了しました' : 'ご回答ありがとうございます'}</h3><p>{runtime?.demo ? 'これはデモのため、出欠の登録・メール送信は行われていません。' : '出欠のご回答を受け付けました。メールアドレスをご登録の方には、回答のコピーを順次お送りします。'}<br />{attendance === 'attending' ? '当日お会いできることを楽しみにしています。' : 'あたたかなお気持ちをありがとうございます。'}</p>{runtime?.demo && <button className="text-button" onClick={() => setSubmitted(false)}>フォームに戻る <ArrowRight size={15} /></button>}</div> : <form onSubmit={submit}>
-            {runtime?.demo && <p className="demo-notice">プレビュー版：回答は保存されず、メールも送信されません。</p>}
-            {configError && <p className="form-error" role="alert">設定を読み込めませんでした。ページを再読み込みしてください。</p>}
-            {runtime && !runtime.demo && !token && <p className="form-error" role="alert">ご回答には、お送りした専用の招待リンクからアクセスしてください。</p>}
-            {deadlinePassed && <p className="form-error">回答期限を過ぎています。新郎新婦へ直接ご連絡ください。</p>}
+          {submitted ? <div className="success-state" ref={resultRef} tabIndex={-1}><div className="success-icon"><Check size={30} strokeWidth={1.2} /></div><span className="section-kicker">THANK YOU</span><h3>{runtime?.demo ? 'ご回答のプレビューが完了しました' : 'ご回答ありがとうございます'}</h3><p>{runtime?.demo ? 'これはデモのため 出欠の登録・メール送信は行われていません' : '出欠のご回答を受け付けました メールアドレスをご登録の方には 回答のコピーを順次お送りします'}<br />{attendance === 'attending' ? '当日お会いできることを楽しみにしています' : 'あたたかなお気持ちをありがとうございます'}</p>{runtime?.demo && <button className="text-button" onClick={() => setSubmitted(false)}>フォームに戻る <ArrowRight size={15} /></button>}</div> : <form onSubmit={submit}>
+            {runtime?.demo && <p className="demo-notice">プレビュー版：回答は保存されず メールも送信されません</p>}
+            {configError && <p className="form-error" role="alert">設定を読み込めませんでした ページを再読み込みしてください</p>}
+            {runtime && !runtime.demo && !token && <p className="form-error" role="alert">ご回答には お送りした専用の招待リンクからアクセスしてください</p>}
+            {deadlinePassed && <p className="form-error">回答期限を過ぎています 新郎新婦へ直接ご連絡ください</p>}
             <fieldset disabled={sending || deadlinePassed}><legend>ご出席について <span className="required">必須</span></legend><div className="attendance-options">{(['attending', 'declining'] as const).map(value => <label key={value} className={`attendance-option ${attendance === value ? 'selected' : ''}`}><input type="radio" name="attendanceChoice" value={value} checked={attendance === value} onChange={() => setAttendance(value)} /><span className="radio-mark">{attendance === value && <span />}</span>{value === 'attending' ? 'ご出席' : 'ご欠席'}<span className="attendance-en">{value === 'attending' ? 'Joyfully accepts' : 'Regretfully declines'}</span></label>)}</div></fieldset>
             <fieldset disabled={sending}><legend>お名前 <span className="required">必須</span></legend><div className="form-grid"><label>姓<input name="lastName" autoComplete="family-name" placeholder="山田" maxLength={39} required /></label><label>名<input name="firstName" autoComplete="given-name" placeholder="花子" maxLength={40} required /></label></div></fieldset>
             <fieldset disabled={sending}><legend>ふりがな <span className="required">必須</span></legend><div className="form-grid"><label>せい<input name="lastKana" placeholder="やまだ" maxLength={49} required /></label><label>めい<input name="firstKana" placeholder="はなこ" maxLength={50} required /></label></div></fieldset>
@@ -163,7 +163,7 @@ function App() {
             <label className="form-field">郵便番号 <span className="optional">任意</span><input name="postalCode" autoComplete="postal-code" inputMode="numeric" placeholder="1234567" maxLength={8} pattern="[0-9]{3}-?[0-9]{4}" title="半角数字7桁（ハイフン可）で入力してください" disabled={sending} /></label>
             <label className="form-field">ご住所 <span className="optional">任意</span><input name="address" autoComplete="address-line1" placeholder="東京都〇〇区〇〇 1-1-1" maxLength={200} disabled={sending} /></label>
             <label className="form-field">建物名・部屋番号 <span className="optional">任意</span><input name="building" autoComplete="address-line2" placeholder="〇〇マンション 101号室" maxLength={200} disabled={sending} /></label>
-            <label className="form-field">メールアドレス <span className="optional">任意</span><input name="email" type="email" autoComplete="email" placeholder="hanako@example.com" maxLength={254} disabled={sending} /><small>ご入力いただいた方に、回答のコピーをメールでお送りします。</small></label>
+            <label className="form-field">メールアドレス <span className="optional">任意</span><input name="email" type="email" autoComplete="email" placeholder="hanako@example.com" maxLength={254} disabled={sending} /><small>ご入力いただいた方に 回答のコピーをメールでお送りします</small></label>
             {attendance === 'attending' && <label className="form-field">アレルギー・お食事について <span className="optional">任意</span><input name="allergies" placeholder="お持ちのアレルギーなどがあればお知らせください" maxLength={500} disabled={sending} /></label>}
             <CompanionFields guests={companions} onChange={setCompanions} disabled={sending || deadlinePassed} />
             <label className="form-field">ふたりへのメッセージ <span className="optional">任意</span><textarea name="message" rows={3} placeholder="お祝いのメッセージなど ご自由にお書きください" maxLength={1000} disabled={sending} /></label>
@@ -175,9 +175,9 @@ function App() {
         </div>
       </section>
 
-      <section className="closing"><p>We can't wait to celebrate with you.</p><span>あなたと過ごす 特別な一日を楽しみに。</span></section>
+      <section className="closing"><p>We can't wait to celebrate with you</p><span>あなたと過ごす 特別な一日を楽しみに</span></section>
     </main>
-    <footer><a href="#" className="footer-names">{wedding.groom} <em>&</em> {wedding.bride}</a><span>WITH LOVE, ALWAYS.</span><a href={`mailto:${wedding.contactEmail}`}>お問い合わせ <ChevronRight size={12} /></a></footer>
+    <footer><a href="#" className="footer-names">{wedding.groom} <em>&</em> {wedding.bride}</a><span>WITH LOVE ALWAYS</span><a href={`mailto:${wedding.contactEmail}`}>お問い合わせ <ChevronRight size={12} /></a></footer>
   </>;
 }
 
