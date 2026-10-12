@@ -18,6 +18,7 @@ export function parseInviteArgs(args: string[]) {
 export function createInviteUrl(websiteUrl: string, token: string, group: GuestGroup) {
   const url = new URL(websiteUrl);
   url.searchParams.set('group', group);
-  url.hash = new URLSearchParams({ invite: token }).toString();
+  url.searchParams.set('invite', token);
+  url.hash = '';
   return url.toString();
 }

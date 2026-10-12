@@ -80,8 +80,8 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
     payload = route.request().postDataJSON();
     await route.fulfill({ status: 201, json: { message: '回答を受け付けました' } });
   });
-  await page.goto(`/?group=family#invite=${token}`);
-  await expect(page).toHaveURL('http://127.0.0.1:5173/?group=family');
+  await page.goto(`/?group=family&invite=${token}`);
+  await expect(page).toHaveURL(`http://127.0.0.1:5173/?group=family&invite=${token}`);
   await expect(page.locator('.schedule-card').first()).toContainText('11:25');
   await expect(page.locator('.schedule-card').first()).toContainText('4階親族控室');
   await page.getByRole('radio', { name: '新婦ゲスト', exact: true }).check();
@@ -100,6 +100,38 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   expect(payload?.email).toBe('');
   expect(payload).not.toHaveProperty('group');
 });
+
+for (const format of ['query', 'fragment'] as const) {
+  test(`${format}の招待トークンをページ内移動・再読み込み・ブックマーク再訪後も保持する`, async ({ page, baseURL }) => {
+    const token = 'd'.repeat(43);
+    let payload: Record<string, unknown> | undefined;
+    await page.route('**/config.json', route => route.fulfill({ json: { demo: false, rsvpEndpoint: '/api/rsvp' } }));
+    await page.route('**/api/rsvp', async route => {
+      payload = route.request().postDataJSON();
+      await route.fulfill({ status: 201, json: { message: '回答を受け付けました' } });
+    });
+    await page.goto(format === 'query' ? `/?group=family&invite=${token}` : `/?group=family#invite=${token}`, { waitUntil: 'domcontentloaded' });
+    const invitationUrl = new URL(`/?group=family&invite=${token}`, baseURL).href;
+    await expect(page).toHaveURL(invitationUrl);
+    await page.locator('.hero-button').click();
+    await expect(page).toHaveURL(`${invitationUrl}#rsvp`);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('button', { name: 'この内容で回答する' })).toBeEnabled();
+    const bookmarkUrl = page.url();
+    await page.goto('about:blank');
+    await page.goto(bookmarkUrl, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(`${invitationUrl}#rsvp`);
+    await expect(page.locator('.schedule-card').first()).toContainText('11:25');
+    await page.getByLabel('姓', { exact: true }).fill('山田');
+    await page.getByLabel('名', { exact: true }).fill('花子');
+    await page.getByLabel('せい', { exact: true }).fill('やまだ');
+    await page.getByLabel('めい', { exact: true }).fill('はなこ');
+    await page.getByRole('button', { name: 'この内容で回答する' }).click();
+    await expect(page.getByRole('heading', { name: 'ご回答ありがとうございます' })).toBeVisible();
+    expect(payload?.token).toBe(token);
+    await expect(page).toHaveURL(`${invitationUrl}#rsvp`);
+  });
+}
 
 test('独自ドメインでCSPを維持したまま同じドメインへ回答する', async ({ page, baseURL }) => {
   const origin = 'https://wedding-invitation-card.app.takoyaki3.com';

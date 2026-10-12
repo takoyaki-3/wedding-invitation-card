@@ -8,8 +8,9 @@ it.each([
   const args = parseInviteArgs(['山田 花子', label]);
   expect(args.group).toBe(group);
   const url = new URL(createInviteUrl('https://example.com/', 'a'.repeat(43), args.group));
-  expect(url.search).toBe(`?group=${group}`);
-  expect(url.hash).toBe(`#invite=${'a'.repeat(43)}`);
+  expect(url.searchParams.get('group')).toBe(group);
+  expect(url.searchParams.get('invite')).toBe('a'.repeat(43));
+  expect(url.hash).toBe('');
   expect(url.toString()).not.toContain(encodeURIComponent(args.name));
   expect(gatheringFromSearch(url.search)).toEqual({ time, place });
 });

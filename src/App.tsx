@@ -27,18 +27,24 @@ function App() {
   const [companions, setCompanions] = useState<CompanionEntry[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [token] = useState(() => new URLSearchParams(window.location.hash.slice(1)).get('invite') || '');
+  const [token] = useState(() => new URLSearchParams(window.location.search).get('invite') || new URLSearchParams(window.location.hash.slice(1)).get('invite') || '');
   const resultRef = useRef<HTMLDivElement>(null);
   const deadlinePassed = Date.now() > new Date(wedding.deadline).getTime();
 
   useEffect(() => {
     document.title = `${wedding.groom} & ${wedding.bride} | Wedding Invitation`;
-    if (window.location.hash.startsWith('#invite=')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    // Preserve legacy invitation tokens in the query so section links keep them bookmarkable.
+    if (new URLSearchParams(window.location.hash.slice(1)).has('invite')) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('invite', token);
+      url.hash = '';
+      window.history.replaceState(window.history.state, '', url);
+    }
     fetch('/config.json', { cache: 'no-store' }).then(async res => {
       if (!res.ok) throw new Error('config');
       setRuntime(runtimeConfigSchema.parse(await res.json()));
     }).catch(() => setConfigError(true));
-  }, []);
+  }, [token]);
 
   useEffect(() => { if (submitted) resultRef.current?.focus(); }, [submitted]);
 
