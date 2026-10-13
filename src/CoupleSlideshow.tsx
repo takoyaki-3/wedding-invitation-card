@@ -7,7 +7,6 @@ const photos = __COUPLE_PHOTOS__;
 export function CoupleSlideshow() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const [hovered, setHovered] = useState(false);
   const [visible, setVisible] = useState(false);
   const section = useRef<HTMLElement>(null);
 
@@ -19,12 +18,12 @@ export function CoupleSlideshow() {
   }, []);
 
   useEffect(() => {
-    if (photos.length < 2 || paused || hovered || !visible) return;
+    if (photos.length < 2 || paused || !visible) return;
     const timer = window.setInterval(() => {
       if (!document.hidden) setIndex(current => (current + 1) % photos.length);
     }, 5000);
     return () => window.clearInterval(timer);
-  }, [paused, hovered, visible]);
+  }, [paused, visible]);
 
   useEffect(() => {
     if (!visible || photos.length < 2) return;
@@ -40,7 +39,6 @@ export function CoupleSlideshow() {
   }
 
   return <section ref={section} className="couple-gallery section-anchor" aria-labelledby="photos-title" aria-roledescription="カルーセル"
-    onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
     onFocusCapture={event => {
       if (!(event.target as HTMLElement).closest('.photo-playback')) setPaused(true);
     }}>

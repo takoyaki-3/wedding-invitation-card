@@ -23,7 +23,6 @@ test('ツーショットの表示、前後移動と自動再生の停止', async
   await expect(photo).toHaveAttribute('src', first!);
   await page.clock.install();
   await gallery.getByRole('button', { name: 'スライドショーを再生' }).click();
-  await page.mouse.move(0, 0);
   await page.clock.fastForward(5100);
   await expect(photo).toHaveAttribute('alt', 'ふたりのツーショット写真 2');
   await gallery.getByRole('button', { name: 'スライドショーを一時停止' }).evaluate(button => button.blur());
