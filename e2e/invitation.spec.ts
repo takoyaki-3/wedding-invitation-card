@@ -85,9 +85,7 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   await expect(page.locator('.schedule-card').first()).toContainText('11:25');
   await expect(page.locator('.schedule-card').first()).toContainText('4階親族控室');
   await page.getByRole('radio', { name: '新婦ゲスト', exact: true }).check();
-  await page.getByLabel('郵便番号').fill('123-4567');
-  await page.getByLabel('ご住所').fill('東京都〇〇区 1-1-1');
-  await page.getByLabel('建物名・部屋番号').fill('テストマンション101');
+  await expect(page.locator('input[name="postalCode"], input[name="address"], input[name="building"]')).toHaveCount(0);
   await page.getByLabel('姓', { exact: true }).fill('山田');
   await page.getByLabel('名', { exact: true }).fill('花子');
   await page.getByLabel('せい', { exact: true }).fill('やまだ');
@@ -96,7 +94,10 @@ test('本番モードの招待リンクと任意メールをAPIへ送信する',
   await page.getByRole('button', { name: 'この内容で回答する' }).click();
   await expect(page.getByRole('heading', { name: 'ご回答ありがとうございます' })).toBeVisible();
   expect(payload?.token).toBe(token);
-  expect(payload).toMatchObject({ name: '山田 花子', kana: 'やまだ はなこ', guestSide: 'bride', postalCode: '123-4567', address: '東京都〇〇区 1-1-1', building: 'テストマンション101' });
+  expect(payload).toMatchObject({ name: '山田 花子', kana: 'やまだ はなこ', guestSide: 'bride' });
+  expect(payload).not.toHaveProperty('postalCode');
+  expect(payload).not.toHaveProperty('address');
+  expect(payload).not.toHaveProperty('building');
   expect(payload?.email).toBe('');
   expect(payload).not.toHaveProperty('group');
 });
