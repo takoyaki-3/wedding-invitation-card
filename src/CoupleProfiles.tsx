@@ -68,7 +68,7 @@ export function CoupleProfiles() {
   const photos = __PROFILE_PHOTOS__[selected] || [];
   const photoIndex = (photoIndices[selected] || 0) % (photos.length || 1);
   const photo = photos[photoIndex];
-  const comment = photo ? comments[decodeURIComponent(photo.split('/').pop()!)] || '思い出の一枚' : '';
+  const comment = photo ? comments[decodeURIComponent(photo.split('/').pop()!)] || '' : '';
   function nextPhoto() {
     if (photos.length < 2) return;
     setPhotoIndices(current => ({ ...current, [selected]: (photoIndex + 1) % photos.length }));
