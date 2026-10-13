@@ -29,13 +29,13 @@ export const handler: APIGatewayProxyHandlerV2 = async event => {
   const { token, website: _website, ...response } = parsed.data;
   if (response.attendance === 'declining') response.allergies = '';
   const digest = hash(token);
-  const pk = `RSVP#${digest}`;
   const payloadHash = hash(JSON.stringify(response));
+  const pk = `RSVP#${digest}#${payloadHash}`;
   const table = process.env.TABLE_NAME!;
   try {
     // A retry after a lost HTTP response returns success without a second write or email.
     const existing = await db.send(new GetCommand({ TableName: table, Key: { pk }, ConsistentRead: true }));
-    if (existing.Item) return existing.Item.payloadHash === payloadHash ? reply(200, '回答を受け付けました') : reply(409, 'この招待状は回答済みです 変更は新郎新婦へご連絡ください');
+    if (existing.Item) return reply(200, '回答を受け付けました');
     const now = Date.now();
     const deadline = Date.parse(process.env.RSVP_DEADLINE || '');
     if (!Number.isFinite(deadline)) return reply(503, '受付設定を確認中です しばらくしてからお試しください');
@@ -50,7 +50,7 @@ export const handler: APIGatewayProxyHandlerV2 = async event => {
       // Concurrent retries can race the initial read; inspect the committed result.
       try {
         const existing = await db.send(new GetCommand({ TableName: table, Key: { pk }, ConsistentRead: true }));
-        if (existing.Item) return existing.Item.payloadHash === payloadHash ? reply(200, '回答を受け付けました') : reply(409, 'この招待状は回答済みです 変更は新郎新婦へご連絡ください');
+        if (existing.Item) return reply(200, '回答を受け付けました');
       } catch { return reply(503, '一時的に受付できません 同じ内容で再度お試しください'); }
       return reply(403, '招待リンクが無効または期限切れです 新郎新婦へご連絡ください');
     }

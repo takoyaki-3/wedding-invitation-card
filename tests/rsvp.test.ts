@@ -117,10 +117,25 @@ describe('出欠受付', () => {
     expect((await invoke(valid)).statusCode).toBe(200);
     expect(send).toHaveBeenCalledTimes(1);
   });
-  it('別の内容の二重回答は上書きしない', async () => {
-    send.mockResolvedValue({ Item: { payloadHash: 'other' } });
-    expect((await invoke(valid)).statusCode).toBe(409);
-    expect(send).toHaveBeenCalledTimes(1);
+  it('同じトークンで異なる回答を別レコードとして保存する', async () => {
+    const items = new Map<string, Record<string, unknown>>();
+    send.mockImplementation(async command => {
+      if (command.input.Key) return { Item: items.get(command.input.Key.pk) };
+      const item = command.input.TransactItems[1].Put.Item;
+      items.set(item.pk, item);
+      return {};
+    });
+    expect((await invoke(valid)).statusCode).toBe(201);
+    expect((await invoke({ ...valid, attendance: 'declining' })).statusCode).toBe(201);
+    expect((await invoke({ ...valid, name: '山田 太郎' })).statusCode).toBe(201);
+    expect(items.size).toBe(3);
+    expect([...items.values()].map(item => item.attendance)).toEqual(['attending', 'declining', 'attending']);
+    expect((await invoke(valid)).statusCode).toBe(200);
+    expect(items.size).toBe(3);
+  });
+  it('同時再送で保存済みになった回答も成功として扱う', async () => {
+    send.mockResolvedValueOnce({}).mockRejectedValueOnce(Object.assign(new Error('cancelled'), { name: 'TransactionCanceledException' })).mockResolvedValueOnce({ Item: { payloadHash: 'saved' } });
+    expect((await invoke(valid)).statusCode).toBe(200);
   });
   it('未発行・失効した招待リンクを拒否する', async () => {
     send.mockResolvedValueOnce({}).mockRejectedValueOnce(Object.assign(new Error('cancelled'), { name: 'TransactionCanceledException' })).mockResolvedValueOnce({});
